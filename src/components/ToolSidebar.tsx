@@ -112,7 +112,7 @@ export const ToolSidebar: React.FC = () => {
           title="Herramientas de dibujo"
           className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
             activeTab === 'tools'
-              ? 'bg-sky-600 text-white shadow-sm'
+              ? 'bg-sky-700 text-white shadow-sm'
               : 'text-slate-500 hover:bg-slate-200/60'
           }`}
         >
@@ -127,7 +127,7 @@ export const ToolSidebar: React.FC = () => {
           title="Catálogo de Mobiliario"
           className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
             activeTab === 'furniture'
-              ? 'bg-sky-600 text-white shadow-sm'
+              ? 'bg-sky-700 text-white shadow-sm'
               : 'text-slate-500 hover:bg-slate-200/60'
           }`}
         >
@@ -142,7 +142,7 @@ export const ToolSidebar: React.FC = () => {
           title="Puertas y Ventanas"
           className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
             activeTab === 'openings'
-              ? 'bg-sky-600 text-white shadow-sm'
+              ? 'bg-sky-700 text-white shadow-sm'
               : 'text-slate-500 hover:bg-slate-200/60'
           }`}
         >
@@ -157,7 +157,7 @@ export const ToolSidebar: React.FC = () => {
           title="Muebles Paramétricos"
           className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
             activeTab === 'parametric'
-              ? 'bg-sky-600 text-white shadow-sm'
+              ? 'bg-sky-700 text-white shadow-sm'
               : 'text-slate-500 hover:bg-slate-200/60'
           }`}
         >
@@ -172,7 +172,7 @@ export const ToolSidebar: React.FC = () => {
           title="Capas del plano"
           className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
             activeTab === 'layers'
-              ? 'bg-sky-600 text-white shadow-sm'
+              ? 'bg-sky-700 text-white shadow-sm'
               : 'text-slate-500 hover:bg-slate-200/60'
           }`}
         >
@@ -187,9 +187,9 @@ export const ToolSidebar: React.FC = () => {
           {activeTab === 'tools' && (
             <div className="flex-1 overflow-y-auto p-3 space-y-4">
               <div>
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                   Edición y Navegación
-                </h3>
+                </h2>
                 <div className="grid grid-cols-2 gap-1.5">
                   <button
                     onClick={() => handleSelectTool('select')}
@@ -199,7 +199,7 @@ export const ToolSidebar: React.FC = () => {
                         : 'border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
-                    <MousePointer className="w-4 h-4 text-sky-600" />
+                    <MousePointer className="w-4 h-4 text-sky-700" />
                     <span>Seleccionar</span>
                   </button>
 
@@ -218,9 +218,9 @@ export const ToolSidebar: React.FC = () => {
               </div>
 
               <div>
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                   Dibujo de Arquitectura
-                </h3>
+                </h2>
                 <div className="space-y-3">
                   {/* Option 1: Preset Room 4x3 m */}
                   <button
@@ -257,8 +257,8 @@ export const ToolSidebar: React.FC = () => {
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <span className="text-[10px] text-slate-400 font-medium">Ancho</span>
-                        <input
+                        <span className="text-[10px] text-slate-500 font-medium">Ancho</span>
+                        <input aria-label="Ancho"
                           type="number"
                           step={unit === 'm' ? '0.1' : '10'}
                           value={customRoomWidth}
@@ -267,8 +267,8 @@ export const ToolSidebar: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 font-medium">Largo</span>
-                        <input
+                        <span className="text-[10px] text-slate-500 font-medium">Largo</span>
+                        <input aria-label="Largo"
                           type="number"
                           step={unit === 'm' ? '0.1' : '10'}
                           value={customRoomHeight}
@@ -303,7 +303,7 @@ export const ToolSidebar: React.FC = () => {
                   <div className="p-2.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                        <Minus className="w-4 h-4 text-emerald-600" />
+                        <Minus className="w-4 h-4 text-emerald-700" />
                         <span>Pared Individual</span>
                       </div>
                       <span className="text-[10px] text-slate-500 font-medium">({unit})</span>
@@ -311,8 +311,8 @@ export const ToolSidebar: React.FC = () => {
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <span className="text-[10px] text-slate-400 font-medium">Longitud</span>
-                        <input
+                        <span className="text-[10px] text-slate-500 font-medium">Longitud</span>
+                        <input aria-label="Longitud"
                           type="number"
                           step={unit === 'm' ? '0.1' : '10'}
                           value={customWallLen}
@@ -321,8 +321,8 @@ export const ToolSidebar: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 font-medium">Sentido</span>
-                        <select
+                        <span className="text-[10px] text-slate-500 font-medium">Sentido</span>
+                        <select aria-label="Sentido"
                           value={customWallDir}
                           onChange={(e) => setCustomWallDir(e.target.value as 'h' | 'v')}
                           className="w-full text-xs font-semibold text-slate-800 bg-white border border-slate-200 rounded-lg px-2 py-1 focus:outline-hidden"
@@ -354,7 +354,7 @@ export const ToolSidebar: React.FC = () => {
                           });
                           setActiveTool('select');
                         }}
-                        className="flex-1 py-1.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors text-center cursor-pointer shadow-xs"
+                        className="flex-1 py-1.5 px-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold transition-colors text-center cursor-pointer shadow-xs"
                       >
                         + Insertar Pared
                       </button>
@@ -396,6 +396,7 @@ export const ToolSidebar: React.FC = () => {
               {/* Category selector */}
               <div className="p-2 border-b border-slate-100 bg-slate-50/50">
                 <select
+                  aria-label="Categoría de mobiliario"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value as FurnitureCategory)}
                   className="w-full text-xs font-semibold bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 focus:outline-hidden"
@@ -430,7 +431,7 @@ export const ToolSidebar: React.FC = () => {
                       </div>
                       <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">{item.description}</p>
                       <div className="mt-2 flex items-center justify-between text-[10px]">
-                        <span className="text-slate-400">Altura: {item.defaultHeight} mm</span>
+                        <span className="text-slate-500">Altura: {item.defaultHeight} mm</span>
                         <div className="flex items-center gap-1.5">
                           <button
                             type="button"
@@ -443,7 +444,7 @@ export const ToolSidebar: React.FC = () => {
                           >
                             + Al centro
                           </button>
-                          <span className="text-sky-600 font-semibold">
+                          <span className="text-sky-700 font-semibold">
                             {isPending ? 'Colocando...' : '+ Colocar'}
                           </span>
                         </div>
@@ -458,9 +459,9 @@ export const ToolSidebar: React.FC = () => {
           {/* TAB 3: OPENINGS */}
           {activeTab === 'openings' && (
             <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Puertas y Ventanas
-              </h3>
+              </h2>
               <p className="text-xs text-slate-500">
                 Inserta directamente en cualquier pared del plano o activa el puntero para colocarla con el ratón.
               </p>
@@ -535,7 +536,7 @@ export const ToolSidebar: React.FC = () => {
               </div>
 
               <div>
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                   Plantillas Rápidas
                 </h4>
                 <div className="space-y-1.5">
@@ -568,9 +569,9 @@ export const ToolSidebar: React.FC = () => {
           {/* TAB 5: LAYERS */}
           {activeTab === 'layers' && (
             <div className="flex-1 overflow-y-auto p-3 space-y-2">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+              <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
                 Capas de Visualización
-              </h3>
+              </h2>
 
               {[
                 { key: 'walls' as const, label: 'Paredes y Huecos', desc: 'Muros, puertas y ventanas' },
@@ -591,7 +592,7 @@ export const ToolSidebar: React.FC = () => {
                     </div>
                     <button className="text-slate-500 hover:text-slate-800">
                       {isVisible ? (
-                        <Eye className="w-4 h-4 text-sky-600" />
+                        <Eye className="w-4 h-4 text-sky-700" />
                       ) : (
                         <EyeOff className="w-4 h-4 text-slate-300" />
                       )}

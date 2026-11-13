@@ -120,7 +120,7 @@ export const ExportModal: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-sky-600 flex items-center justify-center text-white">
+            <div className="w-8 h-8 rounded-xl bg-sky-700 flex items-center justify-center text-white">
               <Download className="w-4 h-4" />
             </div>
             <div>
@@ -139,7 +139,7 @@ export const ExportModal: React.FC = () => {
         {/* Status Notification */}
         {statusMsg && (
           <div className="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl flex items-center gap-2 text-xs text-emerald-800 font-medium">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
             <span>{statusMsg}</span>
           </div>
         )}
@@ -160,7 +160,7 @@ export const ExportModal: React.FC = () => {
                 <div className="text-[10px] text-slate-500">Escalable sin pérdida de resolución para AutoCAD / Illustrator</div>
               </div>
             </div>
-            <Download className="w-4 h-4 text-slate-400" />
+            <Download className="w-4 h-4 text-slate-500" />
           </div>
 
           {/* PNG */}
@@ -169,7 +169,7 @@ export const ExportModal: React.FC = () => {
             className={`p-3 rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 cursor-pointer flex items-center justify-between transition-all${busy ? ' opacity-50 cursor-wait' : ''}`}
           >
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center">
                 <Image className="w-5 h-5" />
               </div>
               <div>
@@ -177,7 +177,7 @@ export const ExportModal: React.FC = () => {
                 <div className="text-[10px] text-slate-500">Captura visual de alta definición del estado actual</div>
               </div>
             </div>
-            <Download className="w-4 h-4 text-slate-400" />
+            <Download className="w-4 h-4 text-slate-500" />
           </div>
 
           {/* CSV */}
@@ -186,7 +186,7 @@ export const ExportModal: React.FC = () => {
             className="p-3 rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 cursor-pointer flex items-center justify-between transition-all"
           >
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
                 <FileSpreadsheet className="w-5 h-5" />
               </div>
               <div>
@@ -194,7 +194,7 @@ export const ExportModal: React.FC = () => {
                 <div className="text-[10px] text-slate-500">Listado de habitaciones, m², perímetros y muebles para Excel</div>
               </div>
             </div>
-            <Download className="w-4 h-4 text-slate-400" />
+            <Download className="w-4 h-4 text-slate-500" />
           </div>
 
           {/* GLB 3D */}
@@ -211,7 +211,7 @@ export const ExportModal: React.FC = () => {
                 <div className="text-[10px] text-slate-500">Compatible con Blender, SketchUp, Unity y visores WebGL</div>
               </div>
             </div>
-            <Download className="w-4 h-4 text-slate-400" />
+            <Download className="w-4 h-4 text-slate-500" />
           </div>
 
           {/* JSON */}
@@ -228,7 +228,7 @@ export const ExportModal: React.FC = () => {
                 <div className="text-[10px] text-slate-500">Proyecto completo con geometría, muebles y parámetros</div>
               </div>
             </div>
-            <Download className="w-4 h-4 text-slate-400" />
+            <Download className="w-4 h-4 text-slate-500" />
           </div>
         </div>
       </div>

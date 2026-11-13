@@ -126,7 +126,7 @@ describe('3D models', () => {
 describe('surface materials', () => {
   it('maps catalog material names to surface kinds', () => {
     expect(surfaceKindOf('wood_oak')).toBe('wood');
-    expect(surfaceKindOf('fabric_velvet')).toBe('fabric');
+    expect(surfaceKindOf('fabric_velvet')).toBe('velvet');
     expect(surfaceKindOf('stainless_steel')).toBe('metal');
     expect(surfaceKindOf('porcelain_white')).toBe('gloss');
     expect(surfaceKindOf('quartz_black')).toBe('stone');

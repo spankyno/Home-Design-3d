@@ -1,6 +1,7 @@
 import Dexie, { Table } from 'dexie';
-import { Project, ProjectMetadata, Unit } from '../types';
+import { FurnitureItem, Project, ProjectMetadata, Unit } from '../types';
 import { newId } from '../utils/id';
+import { canonicalFinishId } from '../materials/finishes';
 import { createDefaultCabinetConfig } from '../parametric';
 
 interface StoredProject {
@@ -183,7 +184,7 @@ export function createSampleProject(): Project {
       height: 850,
       rotation: 0,
       color: '#475569',
-      material: 'fabric_gray',
+      material: 'fabric_weave',
       isLocked: false,
       lockProportions: true,
     },
@@ -256,7 +257,7 @@ export function createSampleProject(): Project {
       height: 1000,
       rotation: 0,
       color: '#cbd5e1',
-      material: 'linen_light',
+      material: 'fabric_linen',
       isLocked: false,
       lockProportions: true,
     },
@@ -309,7 +310,7 @@ export function createSampleProject(): Project {
       height: 2200,
       rotation: 180,
       color: '#f8fafc',
-      material: 'laminate_white',
+      material: 'laminate_matte',
       isLocked: false,
       lockProportions: false,
       isParametric: true,
@@ -330,7 +331,7 @@ export function createSampleProject(): Project {
       height: 60,
       rotation: 0,
       color: '#e2e8f0',
-      material: 'resin_white',
+      material: 'plastic',
       isLocked: false,
       lockProportions: true,
     },
@@ -348,7 +349,7 @@ export function createSampleProject(): Project {
       height: 850,
       rotation: 0,
       color: '#f8fafc',
-      material: 'porcelain_white',
+      material: 'porcelain',
       isLocked: false,
       lockProportions: true,
     },
@@ -366,7 +367,7 @@ export function createSampleProject(): Project {
       height: 780,
       rotation: 270,
       color: '#ffffff',
-      material: 'porcelain_white',
+      material: 'porcelain',
       isLocked: false,
       lockProportions: true,
     },
@@ -479,7 +480,11 @@ export function normalizeProject(raw: unknown): Project {
     walls: asArray(raw.walls, (w) => isRecord(w) && isPoint(w.start) && isPoint(w.end)),
     rooms: asArray(raw.rooms, (r) => isRecord(r) && Array.isArray(r.points) && r.points.every(isPoint)),
     openings: asArray(raw.openings, (o) => isRecord(o) && typeof o.wallId === 'string'),
-    furniture: asArray(raw.furniture, (f) => isRecord(f) && isNum(f.x) && isNum(f.y) && isNum(f.width) && isNum(f.depth)),
+    // Older projects store legacy finish ids ("fabric_gray", "stainless_steel"...): move them to the current ones.
+    furniture: asArray<FurnitureItem>(
+      raw.furniture,
+      (f) => isRecord(f) && isNum(f.x) && isNum(f.y) && isNum(f.width) && isNum(f.depth)
+    ).map((f) => (typeof f.material === 'string' ? { ...f, material: canonicalFinishId(f.material) } : f)),
     manualDimensions: asArray(raw.manualDimensions, (d) => isRecord(d) && isPoint(d.start) && isPoint(d.end)),
     layers: {
       walls: layers.walls !== false,

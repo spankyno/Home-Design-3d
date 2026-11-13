@@ -3,6 +3,7 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { FurnitureItem, ParametricCabinetConfig } from '../types';
 import { AccentKind, SurfaceKind, applyWorldUV, createAccent, createSurface, shade, surfaceKindOf } from '../materials/furniture';
+import { luminanceOf } from '../materials/finishes';
 
 /**
  * Detailed procedural models for every catalog piece.
@@ -17,6 +18,9 @@ type V3 = [number, number, number];
 // ---------------------------------------------------------------------------
 // Materials: created lazily so a model only pays for what it uses
 // ---------------------------------------------------------------------------
+
+const UPHOLSTERED = new Set<SurfaceKind>(['fabric', 'boucle', 'velvet', 'leather', 'mesh']);
+const WORKTOP_KINDS = new Set<SurfaceKind>(['stone', 'marble', 'concrete', 'metal', 'polished']);
 
 class Mats {
   private cache = new Map<string, THREE.Material>();
@@ -47,10 +51,28 @@ class Mats {
   tone(amount: number) {
     return this.get(`tone${amount}`, () => createSurface(this.kind, shade(this.color, amount), this.selected));
   }
-  /** Wood for legs and frames: the piece's colour if it is wooden, otherwise a warm walnut. */
-  wood(amount = -0.25) {
-    const base = this.kind === 'wood' ? this.color : '#8a5a3c';
-    return this.get(`wood${amount}${base}`, () => createSurface('wood', shade(base, amount), this.selected));
+  /**
+   * Legs and frames. Upholstered pieces (sofas, chairs, beds, puffs) stand on warm wood; every other piece uses
+   * its own finish a little darker, so a metal table has metal legs and an oak table has oak legs.
+   */
+  frame(amount = -0.25) {
+    if (UPHOLSTERED.has(this.kind)) {
+      return this.get(`frame${amount}`, () => createSurface('wood', shade('#8a5a3c', amount * 0.4), this.selected));
+    }
+    return this.tone(amount);
+  }
+  /**
+   * Countertop: hard-wearing stone-like surface that contrasts with the cabinet but still derives from its colour
+   * (dark top on a light unit and vice versa). Keeps the piece's finish when it is already a hard material.
+   */
+  top() {
+    const kind: SurfaceKind = WORKTOP_KINDS.has(this.kind) ? this.kind : 'stone';
+    const tint = luminanceOf(this.color) > 0.55 ? shade(this.color, -0.62) : shade(this.color, 0.5);
+    return this.get(`top${kind}${tint}`, () => createSurface(kind, tint, this.selected));
+  }
+  /** Glazed sanitaryware parts: glossy version of the piece's colour. */
+  glaze(amount = 0.06) {
+    return this.get(`glaze${amount}`, () => createSurface('gloss', shade(this.color, amount), this.selected));
   }
   surface(kind: SurfaceKind, color: string) {
     return this.get(`s${kind}${color}`, () => createSurface(kind, color, this.selected));
@@ -242,7 +264,7 @@ function sofaLike(c: Ctx, o: { seats: number; arm: number; chaise?: boolean }) {
   const frameMat = m.tone(-0.12);
 
   // Legs
-  const legMat = m.wood(-0.3);
+  const legMat = m.frame(-0.3);
   const legX = W / 2 - 55;
   for (const sx of [-1, 1]) {
     p.leg(legMat, 44, 28, legH, [sx * legX, 0, zBack + 55]);
@@ -282,7 +304,7 @@ function sofaLike(c: Ctx, o: { seats: number; arm: number; chaise?: boolean }) {
 function chair(c: Ctx, style: 'slats' | 'pad') {
   const { p, m, W, D, H } = c;
   const seatH = Math.round(H * 0.52);
-  const legMat = m.wood(style === 'slats' ? 0 : -0.3);
+  const legMat = style === 'slats' ? m.tone(-0.04) : m.frame(-0.3);
   const inset = 26;
 
   // Front legs tapered; rear posts run up to form the back
@@ -348,7 +370,7 @@ function table(c: Ctx, o: { top?: number; apron?: boolean; inset?: number } = {}
   const { p, m, W, D, H } = c;
   const topT = o.top ?? 36;
   const inset = o.inset ?? 70;
-  const legMat = m.wood(-0.3);
+  const legMat = m.frame(-0.3);
   const legH = H - topT;
   p.rbox(m.main, [W, topT, D], 8, [0, legH, 0]);
 
@@ -368,7 +390,7 @@ function coffeeTable(c: Ctx) {
   const topT = 38;
   p.rbox(m.main, [W, topT, D], 10, [0, H - topT, 0]);
   p.rbox(m.tone(-0.12), [W - 200, 20, D - 150], 6, [0, 110, 0]); // lower shelf
-  cornerLegs(c, m.wood(-0.3), H - topT, 70, 50, 34);
+  cornerLegs(c, m.frame(-0.3), H - topT, 70, 50, 34);
 }
 
 function tvUnit(c: Ctx) {
@@ -376,7 +398,7 @@ function tvUnit(c: Ctx) {
   const legH = 110;
   const t = 18;
   p.box(m.accent('blackMetal'), [W - 40, 14, D - 60], [0, legH - 14, 0]);
-  cornerLegs(c, m.wood(-0.3), legH - 14, 60, 40, 26);
+  cornerLegs(c, m.frame(-0.3), legH - 14, 60, 40, 26);
   carcass(c, -W / 2, W / 2, legH, H - 22, D, t, m.tone(-0.1));
   p.rbox(m.main, [W, 22, D], 6, [0, H - 22, 0]);
   const sideW = W * 0.24;
@@ -428,7 +450,7 @@ function livingShelf(c: Ctx) {
   for (const [color, geos] of booksByColor) {
     const merged = mergeGeometries(geos, false);
     geos.forEach((g) => g.dispose());
-    if (merged) p.add(merged, m.surface('matte', color), [0, 0, 0]);
+    if (merged) p.add(merged, m.surface('matte', color), [0, 0, 0]).userData.decor = true;
   }
 }
 
@@ -436,8 +458,8 @@ function floorLampArc(c: Ctx) {
   const { p, m, W, H } = c;
   const baseX = -W / 2 + 145; // base disc (r = 140) stays inside the footprint
   const endX = W * 0.2;
-  p.cyl(m.accent('blackMetal'), 130, 140, 28, [baseX, 0, 0], 40);
-  p.cyl(m.accent('steel'), 44, 60, 26, [baseX, 28, 0], 24);
+  p.cyl(m.tone(-0.35), 130, 140, 28, [baseX, 0, 0], 40);
+  p.cyl(m.tone(-0.1), 44, 60, 26, [baseX, 28, 0], 24);
   const curve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(baseX, 28, 0),
     new THREE.Vector3(baseX, H * 0.68, 0),
@@ -445,25 +467,25 @@ function floorLampArc(c: Ctx) {
     new THREE.Vector3(endX - 30, H * 0.98, 0),
     new THREE.Vector3(endX, H * 0.9, 0),
   ]);
-  p.add(new THREE.TubeGeometry(curve, 56, 11, 12), m.accent('steel'), [0, 0, 0]);
+  p.add(new THREE.TubeGeometry(curve, 56, 11, 12), m.main, [0, 0, 0]);
   // Dome shade with a glowing bulb
   const dome = new THREE.CylinderGeometry(70, 118, 150, 40, 1, true);
   p.add(dome, m.accent('lampGlow'), [endX, H * 0.9 - 150, 0]);
   p.sphere(m.accent('lampGlow'), 34, [endX, H * 0.9 - 130, 0]);
-  p.cyl(m.accent('steel'), 22, 70, 28, [endX, H * 0.9 - 2, 0], 24); // shade cap
+  p.cyl(m.tone(-0.1), 22, 70, 28, [endX, H * 0.9 - 2, 0], 24); // shade cap
 }
 
 function bedroomLamp(c: Ctx) {
   const { p, m, W, H } = c;
   const R = W / 2;
-  p.cyl(m.accent('brass'), R * 0.62, R * 0.7, 26, [0, 0, 0], 48);
-  p.cyl(m.accent('brass'), 10, 10, H * 0.78, [0, 26, 0], 20);
-  p.sphere(m.accent('brass'), 20, [0, 26 + H * 0.78, 0]);
+  p.cyl(m.tone(-0.2), R * 0.62, R * 0.7, 26, [0, 0, 0], 48);
+  p.cyl(m.main, 10, 10, H * 0.78, [0, 26, 0], 20);
+  p.sphere(m.main, 20, [0, 26 + H * 0.78, 0]);
   // Drum shade (open ends, glowing) with thin brass rims
   const shadeH = H * 0.22;
   const y = H - shadeH;
   p.cyl(m.accent('lampGlow'), R * 0.82, R * 0.98, shadeH, [0, y, 0], 48, undefined, true);
-  p.cyl(m.accent('brass'), R * 0.83, R * 0.83, 6, [0, H - 6, 0], 48, undefined, true);
+  p.cyl(m.main, R * 0.83, R * 0.83, 6, [0, H - 6, 0], 48, undefined, true);
   p.sphere(m.accent('lampGlow'), 38, [0, y + shadeH * 0.45, 0]);
 }
 
@@ -495,7 +517,7 @@ function nightstand(c: Ctx) {
   p.rbox(m.tone(-0.05), [W - 24, H - legH - 26, D - 20], 4, [0, legH, 0]);
   fronts(c, { x0: -W / 2 + 14, x1: W / 2 - 14, y0: legH + 6, y1: legH + (H - legH - 26) * 0.5, z: D / 2 - 8, count: 1, handle: 'knob', mat: m.tone(0.04) });
   fronts(c, { x0: -W / 2 + 14, x1: W / 2 - 14, y0: legH + (H - legH - 26) * 0.5 + 4, y1: H - 30, z: D / 2 - 8, count: 1, handle: 'knob', mat: m.tone(0.04) });
-  cornerLegs(c, m.wood(-0.3), legH, 36, 38, 22);
+  cornerLegs(c, m.frame(-0.3), legH, 36, 38, 22);
 }
 
 function wardrobe(c: Ctx) {
@@ -521,7 +543,7 @@ function dresser(c: Ctx) {
   p.rbox(m.main, [W, 34, D], 8, [0, H - 34, 0]);
   p.rbox(m.tone(-0.08), [W - 30, H - legH - 34, D - 24], 4, [0, legH, -6]);
   fronts(c, { x0: -W / 2 + 18, x1: W / 2 - 18, y0: legH + 6, y1: H - 38, z: D / 2 - 14, count: 1, rows: 4, handle: 'bar-h', thick: 22, mat: m.tone(0.03) });
-  cornerLegs(c, m.wood(-0.3), legH, 55, 46, 28);
+  cornerLegs(c, m.frame(-0.3), legH, 55, 46, 28);
 }
 
 function sideboard(c: Ctx) {
@@ -530,7 +552,7 @@ function sideboard(c: Ctx) {
   p.rbox(m.main, [W, 30, D], 6, [0, H - 30, 0]);
   p.rbox(m.tone(-0.08), [W - 24, H - legH - 30, D - 18], 4, [0, legH, -4]);
   fronts(c, { x0: -W / 2 + 14, x1: W / 2 - 14, y0: legH + 6, y1: H - 32, z: D / 2 - 8, count: 4, handle: 'bar-v', thick: 20, mat: m.tone(0.04) });
-  cornerLegs(c, m.wood(-0.3), legH, 60, 44, 24);
+  cornerLegs(c, m.frame(-0.3), legH, 60, 44, 24);
 }
 
 function storageTall(c: Ctx) {
@@ -561,14 +583,14 @@ function bed(c: Ctx) {
   }
 
   // Frame + legs
-  p.rbox(m.wood(-0.2), [W, frameH, bodyD], 8, [0, legH, bodyZ]);
+  p.rbox(m.frame(-0.2), [W, frameH, bodyD], 8, [0, legH, bodyZ]);
   for (const sx of [-1, 1]) {
-    p.leg(m.wood(-0.4), 56, 34, legH, [sx * (W / 2 - 50), 0, D / 2 - 50]);
-    p.leg(m.wood(-0.4), 56, 34, legH, [sx * (W / 2 - 50), 0, -D / 2 + hbT + 30]);
+    p.leg(m.frame(-0.4), 56, 34, legH, [sx * (W / 2 - 50), 0, D / 2 - 50]);
+    p.leg(m.frame(-0.4), 56, 34, legH, [sx * (W / 2 - 50), 0, -D / 2 + hbT + 30]);
   }
 
   // Mattress, duvet, pillows
-  p.rbox(m.surface('fabric', '#f3f4f6'), [W - 40, mattressH, bodyD - 30], 32, [0, top - 10, bodyZ + 6]);
+  p.rbox(m.tone(0.6), [W - 40, mattressH, bodyD - 30], 32, [0, top - 10, bodyZ + 6]);
   const duvetD = bodyD * 0.7;
   p.rbox(m.main, [W - 6, 60, duvetD], 28, [0, top + mattressH - 40, -D / 2 + hbT + bodyD - duvetD / 2 + 10]);
   p.rbox(m.tone(-0.1), [W - 30, 70, 130], 30, [0, top + mattressH - 36, -D / 2 + hbT + bodyD - duvetD + 40]); // folded edge
@@ -576,7 +598,7 @@ function bed(c: Ctx) {
   const pw = Math.min(640, (W - 100) / pillows - 20);
   for (let i = 0; i < pillows; i++) {
     const x = pillows === 1 ? 0 : (i - 0.5) * (pw + 30);
-    p.rbox(m.surface('fabric', '#fafafa'), [pw, 120, 400], 50, [x, top + mattressH - 14, -D / 2 + hbT + 230], [-0.12, 0, 0]);
+    p.rbox(m.tone(0.75), [pw, 120, 400], 50, [x, top + mattressH - 14, -D / 2 + hbT + 230], [-0.12, 0, 0]);
   }
 }
 
@@ -636,7 +658,7 @@ function kitchenBase(c: Ctx, o: { doors: number; worktop?: THREE.Material; handl
   const plinth = 100;
   p.box(m.accent('blackMetal'), [W - 20, plinth, D - 60], [0, 0, -10]);
   carcass(c, -W / 2, W / 2, plinth, H - WORKTOP_T, D, 18, m.tone(-0.1));
-  p.rbox(o.worktop ?? m.surface('stone', '#2f3338'), [W, WORKTOP_T, D], 4, [0, H - WORKTOP_T, 0]);
+  p.rbox(o.worktop ?? m.top(), [W, WORKTOP_T, D], 4, [0, H - WORKTOP_T, 0]);
   fronts(c, { x0: -W / 2 + 3, x1: W / 2 - 3, y0: plinth + 3, y1: H - WORKTOP_T - 3, z: D / 2, count: o.doors, handle: o.handle ?? 'bar-h', thick: 18 });
 }
 
@@ -667,7 +689,7 @@ function kitchenSink(c: Ctx) {
   shape.holes.push(hole);
   const top = new THREE.ExtrudeGeometry(shape, { depth: WORKTOP_T, bevelEnabled: false });
   top.rotateX(Math.PI / 2); // shape XY -> XZ, extrusion goes down
-  p.add(top, m.surface('stone', '#cbd5e1'), [0, H, 0]);
+  p.add(top, m.top(), [0, H, 0]);
 
   // Basin: steel walls and floor, 190 mm deep
   const steel = m.accent('steel');
@@ -753,7 +775,7 @@ function kitchenIsland(c: Ctx) {
   const plinth = 100;
   p.box(m.accent('blackMetal'), [W - 40, plinth, D - 80], [0, 0, 0]);
   p.rbox(m.main, [W - 6, H - plinth - 40, D - 6], 6, [0, plinth, 0]);
-  p.rbox(m.surface('stone', '#e5e7eb'), [W, 40, D], 6, [0, H - 40, 0]);
+  p.rbox(m.top(), [W, 40, D], 6, [0, H - 40, 0]);
   // Cabinet fronts on the working side (+Z) and a recessed panel on the back
   const doors = Math.max(3, Math.round(W / 450));
   fronts(c, { x0: -W / 2 + 6, x1: W / 2 - 6, y0: plinth + 4, y1: H - 44, z: D / 2 - 2, count: doors, handle: 'bar-h', thick: 18, mat: m.tone(0.05) });
@@ -769,7 +791,7 @@ function kitchenIsland(c: Ctx) {
 
 function bathVanity(c: Ctx) {
   const { p, m, W, D, H } = c;
-  const ceramic = m.accent('ceramic');
+  const ceramic = m.glaze();
   const legH = 150;
   p.rbox(m.main, [W, H - legH - 36, D], 6, [0, legH, 0]);
   fronts(c, { x0: -W / 2 + 6, x1: W / 2 - 6, y0: legH + 6, y1: H - 40, z: D / 2, count: 1, rows: 2, handle: 'bar-h', thick: 18 });
@@ -779,7 +801,7 @@ function bathVanity(c: Ctx) {
   // Raised basin with a drain
   const bR = Math.min(W, D) * 0.34;
   p.cyl(ceramic, bR, bR * 0.95, 70, [0, H, D * 0.06], 40, undefined).scale.set(1.3, 1, 1);
-  p.cyl(m.surface('gloss', '#e5e7eb'), bR * 0.78, bR * 0.7, 3, [0, H + 68, D * 0.06], 40).scale.set(1.3, 1, 1);
+  p.cyl(m.glaze(-0.08), bR * 0.78, bR * 0.7, 3, [0, H + 68, D * 0.06], 40).scale.set(1.3, 1, 1);
   p.cyl(m.accent('chrome'), 22, 22, 4, [0, H + 70, D * 0.06], 20);
 
   // Faucet
@@ -790,7 +812,7 @@ function bathVanity(c: Ctx) {
 
 function bathToilet(c: Ctx) {
   const { p, m, W, D } = c;
-  const ceramic = m.accent('ceramic');
+  const ceramic = m.main;
   const tankD = 190;
   const bowlD = D - tankD + 20;
 
@@ -802,8 +824,8 @@ function bathToilet(c: Ctx) {
   const ring = new THREE.TorusGeometry(1, 0.07, 10, 40);
   ring.scale(W * 0.47, bowlD * 0.46, 1);
   ring.rotateX(Math.PI / 2);
-  p.add(ring, m.accent('ceramic'), [0, 458, D / 2 - bowlD / 2 - 4]);
-  const lid = p.sphere(m.surface('gloss', '#f1f5f9'), 1, [0, 470, D / 2 - bowlD / 2 - 4], [W * 0.43, 16, bowlD * 0.44]);
+  p.add(ring, ceramic, [0, 458, D / 2 - bowlD / 2 - 4]);
+  const lid = p.sphere(m.tone(0.04), 1, [0, 470, D / 2 - bowlD / 2 - 4], [W * 0.43, 16, bowlD * 0.44]);
   lid.rotation.x = -0.1;
 
   // Cistern against the wall, with push buttons
@@ -835,8 +857,8 @@ function bathShower(c: Ctx) {
   shape.holes.push(hole);
   const ring = new THREE.ExtrudeGeometry(shape, { depth: H - 14, bevelEnabled: false });
   ring.rotateX(Math.PI / 2);
-  p.add(ring, m.accent('ceramic'), [0, H, 0]);
-  p.rbox(m.accent('ceramic'), [W - 2 * rim + 8, 20, D - 2 * rim + 8], 6, [0, 0, 0]);
+  p.add(ring, m.main, [0, H, 0]);
+  p.rbox(m.main, [W - 2 * rim + 8, 20, D - 2 * rim + 8], 6, [0, 0, 0]);
   p.cyl(m.accent('chrome'), 48, 48, 4, [W * 0.1, 20, 0], 24);
   p.cyl(m.accent('blackMetal'), 14, 14, 5, [W * 0.1, 22, 0], 16);
   for (const dz of [-20, 0, 20]) p.box(m.accent('chrome'), [80, 3, 6], [W * 0.1, 24, dz]); // grate bars
@@ -860,7 +882,7 @@ function bathTub(c: Ctx) {
   outer.holes.push(inner);
   const body = new THREE.ExtrudeGeometry(outer, { depth: H - 50, bevelEnabled: false });
   body.rotateX(Math.PI / 2);
-  const ceramic = m.accent('ceramic');
+  const ceramic = m.main;
   p.add(body, ceramic, [0, H, 0]);
 
   // Floor, feet and water
@@ -894,7 +916,7 @@ function stairs(c: Ctx) {
   const rise = H / steps;
   const run = D / steps;
   const stringer = 50;
-  const tread = m.wood(-0.1);
+  const tread = m.main;
 
   // Climbs towards -Z: the lowest step is at the front (+Z)
   for (let i = 0; i < steps; i++) {
@@ -918,7 +940,7 @@ function stairs(c: Ctx) {
   for (const s of [-1, 1]) {
     const side = new THREE.ExtrudeGeometry(profile, { depth: stringer, bevelEnabled: false });
     side.rotateY(-Math.PI / 2); // profile x -> world z; extrusion runs towards -x
-    p.add(side, m.surface('wood', '#6b4a32'), [s < 0 ? -W / 2 + stringer : W / 2, 0, 0]);
+    p.add(side, m.tone(-0.3), [s < 0 ? -W / 2 + stringer : W / 2, 0, 0]);
   }
 }
 

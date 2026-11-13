@@ -54,7 +54,7 @@ export const DimensionEditModal: React.FC = () => {
           </div>
           <button
             onClick={() => setDimensionEditTarget(null)}
-            className="text-slate-400 hover:text-slate-600 p-1"
+            className="text-slate-500 hover:text-slate-600 p-1"
           >
             <X className="w-4 h-4" />
           </button>
@@ -80,7 +80,7 @@ export const DimensionEditModal: React.FC = () => {
               className="w-full text-base font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus:bg-white focus:border-sky-500 focus:outline-hidden"
               placeholder="Ej: 500 o 0.5"
             />
-            <span className="text-[10px] text-slate-400 mt-1 block">
+            <span className="text-[10px] text-slate-500 mt-1 block">
               El mueble se desplazará automáticamente para satisfacer esta separación exacta.
             </span>
           </div>
@@ -95,7 +95,7 @@ export const DimensionEditModal: React.FC = () => {
             </button>
             <button
               type="submit"
-              className="flex-1 py-2 px-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm shadow-sky-200"
+              className="flex-1 py-2 px-3 bg-sky-700 hover:bg-sky-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm shadow-sky-200"
             >
               <Check className="w-4 h-4" />
               <span>Aplicar</span>

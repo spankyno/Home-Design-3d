@@ -127,7 +127,7 @@ export const ProjectsModal: React.FC = () => {
         {/* Header */}
         <div className="h-14 border-b border-slate-200 px-6 flex items-center justify-between shrink-0 bg-slate-50/50">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-sky-600 flex items-center justify-center text-white">
+            <div className="w-8 h-8 rounded-xl bg-sky-700 flex items-center justify-center text-white">
               <FolderOpen className="w-4 h-4" />
             </div>
             <div>
@@ -148,7 +148,7 @@ export const ProjectsModal: React.FC = () => {
                 newProject();
                 closeModal();
               }}
-              className="bg-sky-600 hover:bg-sky-700 text-white font-semibold px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all"
+              className="bg-sky-700 hover:bg-sky-800 text-white font-semibold px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Nuevo</span>
@@ -166,7 +166,7 @@ export const ProjectsModal: React.FC = () => {
         {/* Project List */}
         <div className="flex-1 overflow-y-auto p-6 space-y-3">
           {loading ? (
-            <div className="text-center py-12 text-slate-400 text-xs">Cargando proyectos...</div>
+            <div className="text-center py-12 text-slate-500 text-xs">Cargando proyectos...</div>
           ) : projectsList.length === 0 ? (
             <div className="text-center py-12 space-y-3">
               <p className="text-xs text-slate-500">No hay proyectos guardados aún.</p>
@@ -210,7 +210,7 @@ export const ProjectsModal: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-1 text-[11px] text-slate-400 mt-0.5">
+                      <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5">
                         <Clock className="w-3 h-3" />
                         <span>{dateStr}</span>
                       </div>
@@ -244,7 +244,7 @@ export const ProjectsModal: React.FC = () => {
           <span>Los datos se almacenan exclusivamente en tu navegador (sin necesidad de servidor).</span>
           <button
             onClick={handleLoadSample}
-            className="text-sky-600 hover:text-sky-800 font-semibold"
+            className="text-sky-700 hover:text-sky-800 font-semibold"
           >
             Restaurar Ejemplo
           </button>

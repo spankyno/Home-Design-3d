@@ -8,25 +8,51 @@ import * as THREE from 'three';
  * Without a DOM (unit tests, SSR) the textures are skipped and plain coloured materials are returned.
  */
 
-export type SurfaceKind = 'wood' | 'fabric' | 'metal' | 'gloss' | 'stone' | 'satin' | 'matte';
+import { SurfaceKind, surfaceKindOf } from './finishes';
 
-/** Maps the free-text catalog material ("wood_oak", "fabric_gray", "stainless_steel"...) to a surface kind. */
-export function surfaceKindOf(material: string | undefined): SurfaceKind {
-  const m = (material ?? '').toLowerCase();
-  if (/wood|oak|walnut|teak|pine/.test(m)) return 'wood';
-  if (/fabric|linen|cotton|velvet|mesh|textile/.test(m)) return 'fabric';
-  if (/steel|brass|metal|chrome|alu|iron|copper/.test(m)) return 'metal';
-  if (/porcelain|ceramic|resin|acrylic|glass|enamel/.test(m)) return 'gloss';
-  if (/quartz|marble|stone|granite|terrazzo/.test(m)) return 'stone';
-  if (/laminate|melamine|kitchen|lacquer/.test(m)) return 'satin';
-  return 'matte';
-}
+export type { SurfaceKind };
+export { surfaceKindOf };
 
-type PatternKind = 'wood' | 'fabric' | 'brushed' | 'speckle';
+type PatternKind =
+  | 'wood'
+  | 'woodCoarse'
+  | 'fabric'
+  | 'boucle'
+  | 'velvet'
+  | 'leather'
+  | 'mesh'
+  | 'brushed'
+  | 'speckle'
+  | 'marble'
+  | 'concrete';
 
-const PATTERN_SIZE: Record<PatternKind, number> = { wood: 512, fabric: 128, brushed: 256, speckle: 256 };
+const PATTERN_SIZE: Record<PatternKind, number> = {
+  wood: 512,
+  woodCoarse: 512,
+  fabric: 128,
+  boucle: 256,
+  velvet: 128,
+  leather: 256,
+  mesh: 128,
+  brushed: 256,
+  speckle: 256,
+  marble: 512,
+  concrete: 512,
+};
 /** Real-world size (mm) covered by one repetition of each pattern. */
-const PATTERN_TILE_MM: Record<PatternKind, number> = { wood: 600, fabric: 90, brushed: 300, speckle: 260 };
+const PATTERN_TILE_MM: Record<PatternKind, number> = {
+  wood: 600,
+  woodCoarse: 700,
+  fabric: 90,
+  boucle: 160,
+  velvet: 120,
+  leather: 140,
+  mesh: 60,
+  brushed: 300,
+  speckle: 260,
+  marble: 900,
+  concrete: 700,
+};
 
 const textureCache = new Map<PatternKind, THREE.CanvasTexture | null>();
 
@@ -45,18 +71,19 @@ function mulberry32(seed: number) {
 function drawPattern(kind: PatternKind, ctx: CanvasRenderingContext2D, size: number) {
   const rand = mulberry32(kind.length * 7919 + size);
 
-  if (kind === 'wood') {
+  if (kind === 'wood' || kind === 'woodCoarse') {
+    const coarse = kind === 'woodCoarse';
     ctx.fillStyle = '#d9d9d9';
     ctx.fillRect(0, 0, size, size);
     // Long, slightly wavy grain lines, drawn 3 times vertically so the texture tiles seamlessly.
-    for (let i = 0; i < 220; i++) {
+    for (let i = 0; i < (coarse ? 90 : 220); i++) {
       const y0 = rand() * size;
-      const amp = 2 + rand() * 7;
+      const amp = (coarse ? 5 : 2) + rand() * (coarse ? 14 : 7);
       const freq = (0.004 + rand() * 0.01) * Math.PI * 2;
       const phase = rand() * Math.PI * 2;
       const dark = 0.04 + rand() * 0.16;
       ctx.strokeStyle = `rgba(40,40,40,${dark})`;
-      ctx.lineWidth = 0.6 + rand() * 2.2;
+      ctx.lineWidth = (coarse ? 1.5 : 0.6) + rand() * (coarse ? 3.5 : 2.2);
       for (const wrap of [-size, 0, size]) {
         ctx.beginPath();
         for (let x = 0; x <= size; x += 8) {
@@ -68,7 +95,7 @@ function drawPattern(kind: PatternKind, ctx: CanvasRenderingContext2D, size: num
       }
     }
     // A few knots
-    for (let k = 0; k < 3; k++) {
+    for (let k = 0; k < (coarse ? 6 : 3); k++) {
       const kx = rand() * size;
       const ky = rand() * size;
       for (let r = 4; r < 22; r += 4) {
@@ -78,6 +105,113 @@ function drawPattern(kind: PatternKind, ctx: CanvasRenderingContext2D, size: num
         ctx.ellipse(kx, ky, r * 2.2, r, 0, 0, Math.PI * 2);
         ctx.stroke();
       }
+    }
+  } else if (kind === 'boucle') {
+    ctx.fillStyle = '#e2e2e2';
+    ctx.fillRect(0, 0, size, size);
+    // Tiny loops of yarn, drawn with wrap-around copies so the tile is seamless
+    for (let i = 0; i < 2600; i++) {
+      const x = rand() * size;
+      const y = rand() * size;
+      const r = 2 + rand() * 3.5;
+      const dark = rand() > 0.5;
+      ctx.strokeStyle = dark ? `rgba(0,0,0,${0.08 + rand() * 0.18})` : `rgba(255,255,255,${0.2 + rand() * 0.3})`;
+      ctx.lineWidth = 1.1;
+      for (const ox of [0, -size, size]) {
+        for (const oy of [0, -size, size]) {
+          ctx.beginPath();
+          ctx.arc(x + ox, y + oy, r, rand() * 6, rand() * 6 + 3.6);
+          ctx.stroke();
+        }
+      }
+    }
+  } else if (kind === 'velvet') {
+    ctx.fillStyle = '#dedede';
+    ctx.fillRect(0, 0, size, size);
+    for (let i = 0; i < 2200; i++) {
+      ctx.fillStyle = `rgba(${rand() > 0.5 ? '0,0,0' : '255,255,255'},${rand() * 0.07})`;
+      ctx.fillRect(rand() * size, rand() * size, 1 + rand() * 2, 1 + rand() * 6);
+    }
+  } else if (kind === 'leather') {
+    ctx.fillStyle = '#d4d4d4';
+    ctx.fillRect(0, 0, size, size);
+    // Pebbled grain: irregular cells with dark creases between them (wrapped copies keep it seamless)
+    for (let i = 0; i < 520; i++) {
+      const x = rand() * size;
+      const y = rand() * size;
+      const r = 4 + rand() * 6;
+      for (const ox of [0, -size, size]) {
+        for (const oy of [0, -size, size]) {
+          const g = ctx.createRadialGradient(x + ox - r * 0.3, y + oy - r * 0.3, 0, x + ox, y + oy, r);
+          g.addColorStop(0, 'rgba(255,255,255,0.28)');
+          g.addColorStop(0.7, 'rgba(0,0,0,0.02)');
+          g.addColorStop(1, 'rgba(0,0,0,0.30)');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(x + ox, y + oy, r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+  } else if (kind === 'mesh') {
+    ctx.fillStyle = '#d0d0d0';
+    ctx.fillRect(0, 0, size, size);
+    const cell = 8;
+    for (let y = 0; y < size; y += cell) {
+      for (let x = 0; x < size; x += cell) {
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillRect(x + 2, y + 2, cell - 4, cell - 4);
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.fillRect(x, y, cell, 1);
+      }
+    }
+  } else if (kind === 'marble') {
+    ctx.fillStyle = '#ececec';
+    ctx.fillRect(0, 0, size, size);
+    // Soft clouds, then thin veins following a random walk
+    for (let i = 0; i < 60; i++) {
+      ctx.fillStyle = `rgba(120,120,130,${0.015 + rand() * 0.03})`;
+      ctx.beginPath();
+      ctx.arc(rand() * size, rand() * size, 30 + rand() * 90, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    for (let v = 0; v < 9; v++) {
+      let x = rand() * size;
+      let y = rand() * size;
+      let angle = rand() * Math.PI * 2;
+      const width = 0.7 + rand() * 2.4;
+      ctx.strokeStyle = `rgba(60,60,75,${0.18 + rand() * 0.35})`;
+      ctx.lineWidth = width;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      for (let step = 0; step < 90; step++) {
+        angle += (rand() - 0.5) * 0.5;
+        x += Math.cos(angle) * 9;
+        y += Math.sin(angle) * 9;
+        ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+  } else if (kind === 'concrete') {
+    ctx.fillStyle = '#cfcfcf';
+    ctx.fillRect(0, 0, size, size);
+    for (let i = 0; i < 380; i++) {
+      const light = rand() > 0.5;
+      ctx.fillStyle = `rgba(${light ? '255,255,255' : '0,0,0'},${0.02 + rand() * 0.05})`;
+      const r = 14 + rand() * 60;
+      const x = rand() * size;
+      const y = rand() * size;
+      for (const ox of [0, -size, size]) {
+        for (const oy of [0, -size, size]) {
+          ctx.beginPath();
+          ctx.arc(x + ox, y + oy, r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+    for (let i = 0; i < 500; i++) {
+      ctx.fillStyle = `rgba(0,0,0,${0.15 + rand() * 0.3})`;
+      ctx.fillRect(rand() * size, rand() * size, 1 + rand() * 1.5, 1 + rand() * 1.5);
     }
   } else if (kind === 'fabric') {
     ctx.fillStyle = '#e4e4e4';
@@ -158,13 +292,28 @@ interface SurfaceSpec {
 
 const SURFACES: Record<SurfaceKind, SurfaceSpec> = {
   wood: { pattern: 'wood', roughness: 0.55, metalness: 0, bump: 0.5, clearcoat: 0.15 },
+  woodCoarse: { pattern: 'woodCoarse', roughness: 0.62, metalness: 0, bump: 0.7, clearcoat: 0.08 },
   fabric: { pattern: 'fabric', roughness: 0.95, metalness: 0, bump: 1.2, sheen: 0.5 },
+  boucle: { pattern: 'boucle', roughness: 0.98, metalness: 0, bump: 2.2, sheen: 0.35 },
+  velvet: { pattern: 'velvet', roughness: 0.82, metalness: 0, bump: 0.25, sheen: 1 },
+  leather: { pattern: 'leather', roughness: 0.48, metalness: 0, bump: 0.9, clearcoat: 0.25, sheen: 0.2 },
+  mesh: { pattern: 'mesh', roughness: 0.9, metalness: 0, bump: 1.2 },
   metal: { pattern: 'brushed', roughness: 0.34, metalness: 0.85, bump: 0.08 },
+  polished: { roughness: 0.06, metalness: 1 },
   gloss: { roughness: 0.12, metalness: 0.02, clearcoat: 0.8 },
+  plastic: { roughness: 0.38, metalness: 0, clearcoat: 0.15 },
   stone: { pattern: 'speckle', roughness: 0.28, metalness: 0.02, clearcoat: 0.4 },
+  marble: { pattern: 'marble', roughness: 0.16, metalness: 0.02, clearcoat: 0.6 },
+  concrete: { pattern: 'concrete', roughness: 0.92, metalness: 0, bump: 1.1 },
   satin: { roughness: 0.42, metalness: 0.02, clearcoat: 0.2 },
   matte: { roughness: 0.8, metalness: 0.02 },
 };
+
+/** Numbers that make two surface kinds look different (used by tests to verify the finish is really applied). */
+export function surfaceSignature(material: THREE.Material): string {
+  const m = material as THREE.MeshPhysicalMaterial;
+  return [m.roughness, m.metalness, m.clearcoat ?? 0, m.sheen ?? 0].join('|');
+}
 
 const HIGHLIGHT = new THREE.Color('#0ea5e9');
 

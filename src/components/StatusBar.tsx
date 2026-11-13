@@ -46,12 +46,12 @@ export const StatusBar: React.FC = () => {
   const totalGrossAreaM2 = totalNetAreaM2 > 0 ? totalNetAreaM2 * 1.12 : 0;
 
   return (
-    <footer className="h-8 bg-white border-t border-slate-200 px-4 flex items-center justify-between text-[11px] text-slate-600 select-none z-30 font-medium shadow-xs">
+    <div role="toolbar" aria-label="Barra de estado: coordenadas, rejilla, superficies y zoom" className="h-8 bg-white border-t border-slate-200 px-4 flex items-center justify-between text-[11px] text-slate-600 select-none z-30 font-medium shadow-xs">
       {/* Left: Cursor coordinates & Snap */}
       <div className="flex items-center gap-4">
         {/* Coordinates */}
         <div className="flex items-center gap-1.5 font-mono text-slate-700">
-          <Compass className="w-3.5 h-3.5 text-sky-600" />
+          <Compass className="w-3.5 h-3.5 text-sky-700" />
           <span>
             X: {formatMeasurement(cursorWorldPos.x, project.unit)} &nbsp;·&nbsp; Y:{' '}
             {formatMeasurement(cursorWorldPos.y, project.unit)}
@@ -67,7 +67,7 @@ export const StatusBar: React.FC = () => {
           className={`flex items-center gap-1 px-1.5 py-0.5 rounded cursor-pointer transition-colors ${
             project.snapEnabled
               ? 'text-sky-700 bg-sky-50 font-semibold'
-              : 'text-slate-400 hover:text-slate-600'
+              : 'text-slate-500 hover:text-slate-600'
           }`}
         >
           <Magnet className="w-3 h-3" />
@@ -78,6 +78,7 @@ export const StatusBar: React.FC = () => {
         <div className="flex items-center gap-1 text-slate-500">
           <Grid className="w-3 h-3" />
           <select
+            aria-label="Tamaño de la rejilla"
             value={project.gridSize}
             onChange={(e) => setGridSize(parseInt(e.target.value) || 100)}
             className="bg-transparent hover:bg-slate-100 rounded px-1 py-0.5 text-[11px] cursor-pointer focus:outline-hidden"
@@ -94,21 +95,21 @@ export const StatusBar: React.FC = () => {
       {/* Center: Real Architectural Surfaces */}
       <div className="hidden md:flex items-center gap-4 text-slate-600">
         <div>
-          <span className="text-slate-400">Sup. Útil:</span>{' '}
+          <span className="text-slate-500">Sup. Útil:</span>{' '}
           <strong className="text-slate-800 font-bold">
             {totalNetAreaM2.toFixed(2).replace('.', ',')} m²
           </strong>
         </div>
         <div className="w-[1px] h-3 bg-slate-200" />
         <div>
-          <span className="text-slate-400">Sup. Construida aprox:</span>{' '}
+          <span className="text-slate-500">Sup. Construida aprox:</span>{' '}
           <strong className="text-slate-800 font-bold">
             {totalGrossAreaM2.toFixed(2).replace('.', ',')} m²
           </strong>
         </div>
         <div className="w-[1px] h-3 bg-slate-200" />
         <div>
-          <span className="text-slate-400">Perímetro total:</span>{' '}
+          <span className="text-slate-500">Perímetro total:</span>{' '}
           <strong className="text-slate-800 font-bold">
             {totalPerimeterM.toFixed(1).replace('.', ',')} m
           </strong>
@@ -146,6 +147,6 @@ export const StatusBar: React.FC = () => {
           <span className="hidden sm:inline">Ajustar</span>
         </button>
       </div>
-    </footer>
+    </div>
   );
 };

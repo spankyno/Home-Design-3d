@@ -593,12 +593,17 @@ export const useEditorStore = create<EditorState>((set, get) => {
           if (f.id !== id) return f;
           const next = { ...f, ...updates };
           // A parametric cabinet is built from its config: keep it in sync with the outer size.
-          if (next.parametricConfig && (updates.width ?? updates.depth ?? updates.height) !== undefined) {
+          if (
+            next.parametricConfig &&
+            (updates.width ?? updates.depth ?? updates.height ?? updates.color ?? updates.material) !== undefined
+          ) {
             next.parametricConfig = {
               ...next.parametricConfig,
               exteriorWidth: next.width,
               exteriorDepth: next.depth,
               exteriorHeight: next.height,
+              finishColor: next.color,
+              finishMaterial: next.material,
             };
           }
           return next;

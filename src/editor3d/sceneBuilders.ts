@@ -277,7 +277,18 @@ export function buildFurnitureMesh(item: FurnitureItem, isSelected: boolean): TH
 
   group.add(
     item.isParametric && item.parametricConfig
-      ? buildParametricCabinet3D(item.parametricConfig, isSelected)
+      ? buildParametricCabinet3D(
+          // The item is the source of truth for size, colour and finish (the inspector edits the item)
+          {
+            ...item.parametricConfig,
+            exteriorWidth: item.width,
+            exteriorDepth: item.depth,
+            exteriorHeight: item.height,
+            finishColor: item.color || item.parametricConfig.finishColor,
+            finishMaterial: item.material || item.parametricConfig.finishMaterial,
+          },
+          isSelected
+        )
       : buildFurnitureModel(item, isSelected)
   );
   return group;

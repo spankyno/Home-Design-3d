@@ -75,7 +75,7 @@ export const EditorCanvas3D: React.FC = () => {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
     renderer.shadowMap.enabled = initialShadows;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap; // PCFSoftShadowMap was removed in recent Three.js releases
     rendererRef.current = renderer;
     mount.appendChild(renderer.domElement);
 
@@ -172,7 +172,7 @@ export const EditorCanvas3D: React.FC = () => {
     if (!renderer || !scene) return;
     renderer.shadowMap.enabled = showShadows3D;
     scene.traverse((obj) => {
-      if (obj instanceof THREE.Light && obj.castShadow !== undefined) obj.castShadow = showShadows3D;
+      if (obj instanceof THREE.DirectionalLight) obj.castShadow = showShadows3D; // other light types cannot cast shadows
       // Materials must be recompiled when shadow maps are switched on/off.
       if (obj instanceof THREE.Mesh) {
         (Array.isArray(obj.material) ? obj.material : [obj.material]).forEach((m) => (m.needsUpdate = true));

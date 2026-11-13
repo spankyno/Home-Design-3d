@@ -581,35 +581,23 @@ export function createWallMaterial(
   opacity: number = 1.0,
   isSelected: boolean = false
 ): THREE.MeshStandardMaterial {
-  if (isSelected) {
-    return new THREE.MeshStandardMaterial({
-      color: '#38bdf8',
-      roughness: 0.5,
-      metalness: 0.1,
-      transparent: isTransparent,
-      opacity,
-    });
-  }
-
   const def = WALL_FINISHES.find((w) => w.id === finishType);
+  const textured = def && (def.id.startsWith('brick_') || def.id.startsWith('tile_') || def.id.startsWith('concrete_'));
+  const baseColor = customColor || (def ? def.colorHex : '#e2e8f0');
 
-  if (def && (def.id.startsWith('brick_') || def.id.startsWith('tile_') || def.id.startsWith('concrete_'))) {
-    const tex = getProceduralTexture(def.id);
-    return new THREE.MeshStandardMaterial({
-      map: tex,
-      color: customColor ? new THREE.Color(customColor) : new THREE.Color(def.colorHex),
-      roughness: def.roughness,
-      metalness: 0.05,
-      transparent: isTransparent,
-      opacity,
-    });
-  }
-
-  return new THREE.MeshStandardMaterial({
-    color: customColor || (def ? def.colorHex : '#e2e8f0'),
+  const mat = new THREE.MeshStandardMaterial({
+    map: textured ? getProceduralTexture(def!.id) : null,
+    color: new THREE.Color(baseColor),
     roughness: def ? def.roughness : 0.85,
     metalness: 0.05,
     transparent: isTransparent,
     opacity,
   });
+
+  // A selected wall keeps its own colour and finish; it is only tinted (it used to turn solid blue).
+  if (isSelected) {
+    mat.emissive = new THREE.Color('#0ea5e9');
+    mat.emissiveIntensity = 0.25;
+  }
+  return mat;
 }

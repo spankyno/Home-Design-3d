@@ -10,9 +10,12 @@ import {
   RotateCw,
   Palette,
   Sparkles,
+  ChevronDown,
 } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useEditorStore } from '../state/useEditorStore';
+import { ColorPicker, FinishPicker, finishPreviewStyle } from './ColorFinishPanel';
+import { finishById } from '../materials/finishes';
 import { newId } from '../utils/id';
 import { convertMmTo, convertToMm, formatMeasurement, calculatePolygonArea, calculatePolygonPerimeter, distance, getBoundingBox } from '../geometry';
 import { FloorMaterialType, WallFinishType } from '../types';
@@ -25,6 +28,7 @@ export const PropertyInspector: React.FC = () => {
     project,
     selectedIds,
     updateFurniture,
+    pushHistorySnapshot,
     updateWall,
     updateRoom,
     updateRoomDimensions,
@@ -41,6 +45,7 @@ export const PropertyInspector: React.FC = () => {
       project: s.project,
       selectedIds: s.selectedIds,
       updateFurniture: s.updateFurniture,
+      pushHistorySnapshot: s.pushHistorySnapshot,
       updateWall: s.updateWall,
       updateRoom: s.updateRoom,
       updateRoomDimensions: s.updateRoomDimensions,
@@ -60,6 +65,7 @@ export const PropertyInspector: React.FC = () => {
 
   // Find selected entity
   const selectedFurniture = project.furniture.find((f) => f.id === selectedId);
+  const currentFinish = finishById(selectedFurniture?.material);
   const selectedWall = project.walls.find((w) => w.id === selectedId);
   const selectedRoom = project.rooms.find((r) => r.id === selectedId);
   const selectedOpening = project.openings.find((o) => o.id === selectedId);
@@ -91,7 +97,7 @@ export const PropertyInspector: React.FC = () => {
 
       {/* Collapsed State Bar */}
       {collapsed && (
-        <div className="flex-1 flex flex-col items-center py-4 text-slate-400">
+        <div className="flex-1 flex flex-col items-center py-4 text-slate-500">
           <Sliders className="w-4 h-4" />
         </div>
       )}
@@ -102,7 +108,7 @@ export const PropertyInspector: React.FC = () => {
           {/* Header */}
           <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-sky-600" />
+              <Sliders className="w-4 h-4 text-sky-700" />
               <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
                 Propiedades
               </h2>
@@ -139,7 +145,7 @@ export const PropertyInspector: React.FC = () => {
                     }
                     title={selectedFurniture.lockProportions ? 'Proporciones bloqueadas' : 'Proporciones libres'}
                     className={`text-[10px] flex items-center gap-1 font-medium ${
-                      selectedFurniture.lockProportions ? 'text-sky-600' : 'text-slate-400'
+                      selectedFurniture.lockProportions ? 'text-sky-700' : 'text-slate-500'
                     }`}
                   >
                     {selectedFurniture.lockProportions ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
@@ -150,8 +156,8 @@ export const PropertyInspector: React.FC = () => {
                   {selectedFurniture.shape === 'circle' ? (
                     <>
                   <div>
-                    <span className="text-[10px] text-slate-400 font-medium">Diámetro</span>
-                    <input
+                    <span className="text-[10px] text-slate-500 font-medium">Diámetro</span>
+                    <input aria-label="Diámetro"
                       type="number"
                       step={unit === 'm' ? '0.05' : '10'}
                       value={toDisplay(selectedFurniture.width)}
@@ -166,8 +172,8 @@ export const PropertyInspector: React.FC = () => {
                   ) : (
                     <>
                   <div>
-                    <span className="text-[10px] text-slate-400 font-medium">Ancho (X)</span>
-                    <input
+                    <span className="text-[10px] text-slate-500 font-medium">Ancho (X)</span>
+                    <input aria-label="Ancho (X)"
                       type="number"
                       step={unit === 'm' ? '0.05' : '10'}
                       value={toDisplay(selectedFurniture.width)}
@@ -190,8 +196,8 @@ export const PropertyInspector: React.FC = () => {
                   </div>
 
                   <div>
-                    <span className="text-[10px] text-slate-400 font-medium">Fondo (Y)</span>
-                    <input
+                    <span className="text-[10px] text-slate-500 font-medium">Fondo (Y)</span>
+                    <input aria-label="Fondo (Y)"
                       type="number"
                       step={unit === 'm' ? '0.05' : '10'}
                       value={toDisplay(selectedFurniture.depth)}
@@ -208,8 +214,8 @@ export const PropertyInspector: React.FC = () => {
                   )}
 
                   <div>
-                    <span className="text-[10px] text-slate-400 font-medium">Alto (Z)</span>
-                    <input
+                    <span className="text-[10px] text-slate-500 font-medium">Alto (Z)</span>
+                    <input aria-label="Alto (Z)"
                       type="number"
                       step={unit === 'm' ? '0.05' : '10'}
                       value={toDisplay(selectedFurniture.height)}
@@ -230,8 +236,8 @@ export const PropertyInspector: React.FC = () => {
                 <label className="text-[11px] font-semibold text-slate-500 uppercase">Posición en Planta ({unit})</label>
                 <div className="grid grid-cols-2 gap-2 mt-1.5">
                   <div>
-                    <span className="text-[10px] text-slate-400 font-medium">X Centro</span>
-                    <input
+                    <span className="text-[10px] text-slate-500 font-medium">X Centro</span>
+                    <input aria-label="X Centro"
                       type="number"
                       step={unit === 'm' ? '0.05' : '10'}
                       value={toDisplay(selectedFurniture.x)}
@@ -245,8 +251,8 @@ export const PropertyInspector: React.FC = () => {
                   </div>
 
                   <div>
-                    <span className="text-[10px] text-slate-400 font-medium">Y Centro</span>
-                    <input
+                    <span className="text-[10px] text-slate-500 font-medium">Y Centro</span>
+                    <input aria-label="Y Centro"
                       type="number"
                       step={unit === 'm' ? '0.05' : '10'}
                       value={toDisplay(selectedFurniture.y)}
@@ -293,30 +299,53 @@ export const PropertyInspector: React.FC = () => {
                 </div>
               </div>
 
-              {/* Color & Material */}
-              <div>
+              {/* Color & finish */}
+              <div className="space-y-2.5">
                 <label className="text-[11px] font-semibold text-slate-500 uppercase flex items-center gap-1">
-                  <Palette className="w-3 h-3 text-slate-400" />
-                  <span>Color y Acabado</span>
+                  <Palette className="w-3 h-3 text-slate-500" />
+                  <span>Color</span>
                 </label>
-                <div className="flex items-center gap-2 mt-1.5">
-                  <input
-                    type="color"
-                    value={selectedFurniture.color || '#475569'}
-                    onChange={(e) => updateFurniture(selectedFurniture.id, { color: e.target.value })}
-                    className="w-9 h-9 rounded-lg border border-slate-200 cursor-pointer p-0.5 bg-white"
-                  />
-                  <div className="flex-1 flex gap-1.5 overflow-x-auto py-1">
-                    {['#475569', '#334155', '#cbd5e1', '#b45309', '#78350f', '#f8fafc', '#3b82f6'].map((c) => (
-                      <button
-                        key={c}
-                        onClick={() => updateFurniture(selectedFurniture.id, { color: c })}
-                        style={{ backgroundColor: c }}
-                        className="w-6 h-6 rounded-md border border-slate-300 shadow-xs shrink-0"
-                      />
-                    ))}
+                <ColorPicker
+                  label="Color del mueble"
+                  value={selectedFurniture.color || '#475569'}
+                  onChange={(hex) => updateFurniture(selectedFurniture.id, { color: hex })}
+                  onCommit={pushHistorySnapshot}
+                />
+
+                <details className="group rounded-xl border border-slate-200 bg-white">
+                  <summary className="flex items-center gap-2 p-2 cursor-pointer list-none select-none">
+                    <span
+                      aria-hidden
+                      style={finishPreviewStyle(
+                        currentFinish?.kind ?? 'matte',
+                        currentFinish?.natural ? currentFinish.defaultColor : selectedFurniture.color || '#94a3b8'
+                      )}
+                      className="w-7 h-7 rounded-md border border-slate-300/80 shrink-0"
+                    />
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-[10px] font-semibold text-slate-500 uppercase">Acabado</span>
+                      <span className="block text-xs font-bold text-slate-800 truncate">
+                        {currentFinish?.name ?? selectedFurniture.material}
+                      </span>
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-slate-500 transition-transform group-open:rotate-180" aria-hidden />
+                  </summary>
+                  <div className="p-2 pt-0 max-h-72 overflow-y-auto">
+                    <FinishPicker
+                      label="Acabado del mueble"
+                      value={selectedFurniture.material}
+                      color={selectedFurniture.color}
+                      onChange={(f) => {
+                        // Natural materials (oak, brass, marble...) bring their own colour; the rest keep the piece's
+                        updateFurniture(selectedFurniture.id, {
+                          material: f.id,
+                          ...(f.natural ? { color: f.defaultColor } : {}),
+                        });
+                        pushHistorySnapshot();
+                      }}
+                    />
                   </div>
-                </div>
+                </details>
               </div>
 
               {/* Parametric Special Button */}
@@ -362,7 +391,7 @@ export const PropertyInspector: React.FC = () => {
           {selectedWall && (
             <div className="space-y-4">
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
-                <span className="text-[10px] text-slate-400 font-semibold uppercase">Longitud de Pared</span>
+                <span className="text-[10px] text-slate-500 font-semibold uppercase">Longitud de Pared</span>
                 <div className="text-lg font-black text-slate-800">
                   {formatMeasurement(distance(selectedWall.start, selectedWall.end), unit)}
                 </div>
@@ -402,8 +431,8 @@ export const PropertyInspector: React.FC = () => {
                 <label className="text-[11px] font-semibold text-slate-500 uppercase">Inicio de Pared ({unit})</label>
                 <div className="grid grid-cols-2 gap-2 mt-1">
                   <div>
-                    <span className="text-[10px] text-slate-400">X1</span>
-                    <input
+                    <span className="text-[10px] text-slate-500">X1</span>
+                    <input aria-label="X1"
                       type="number"
                       step={unit === 'm' ? '0.05' : '10'}
                       value={toDisplay(selectedWall.start.x)}
@@ -415,8 +444,8 @@ export const PropertyInspector: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400">Y1</span>
-                    <input
+                    <span className="text-[10px] text-slate-500">Y1</span>
+                    <input aria-label="Y1"
                       type="number"
                       step={unit === 'm' ? '0.05' : '10'}
                       value={toDisplay(selectedWall.start.y)}
@@ -434,8 +463,8 @@ export const PropertyInspector: React.FC = () => {
                 <label className="text-[11px] font-semibold text-slate-500 uppercase">Fin de Pared ({unit})</label>
                 <div className="grid grid-cols-2 gap-2 mt-1">
                   <div>
-                    <span className="text-[10px] text-slate-400">X2</span>
-                    <input
+                    <span className="text-[10px] text-slate-500">X2</span>
+                    <input aria-label="X2"
                       type="number"
                       step={unit === 'm' ? '0.05' : '10'}
                       value={toDisplay(selectedWall.end.x)}
@@ -447,8 +476,8 @@ export const PropertyInspector: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400">Y2</span>
-                    <input
+                    <span className="text-[10px] text-slate-500">Y2</span>
+                    <input aria-label="Y2"
                       type="number"
                       step={unit === 'm' ? '0.05' : '10'}
                       value={toDisplay(selectedWall.end.y)}
@@ -465,7 +494,7 @@ export const PropertyInspector: React.FC = () => {
               {/* Wall Finish / Revestimiento */}
               <div>
                 <label className="text-[11px] font-semibold text-slate-500 uppercase flex items-center gap-1.5 mb-1.5">
-                  <Palette className="w-3.5 h-3.5 text-sky-600" />
+                  <Palette className="w-3.5 h-3.5 text-sky-700" />
                   <span>Acabado de Pared</span>
                 </label>
                 <select
@@ -479,7 +508,7 @@ export const PropertyInspector: React.FC = () => {
                     </option>
                   ))}
                 </select>
-                <p className="text-[10px] text-slate-400 mt-1">
+                <p className="text-[10px] text-slate-500 mt-1">
                   {WALL_FINISHES.find((w) => w.id === (selectedWall.finishMaterial || 'paint_white'))?.description}
                 </p>
               </div>
@@ -487,29 +516,19 @@ export const PropertyInspector: React.FC = () => {
               {/* Color */}
               <div>
                 <label className="text-[11px] font-semibold text-slate-500 uppercase">Tono / Color Pared</label>
-                <div className="flex items-center gap-2 mt-1.5">
-                  <input
-                    type="color"
+                <div className="mt-1.5">
+                  <ColorPicker
+                    label="Color de la pared"
                     value={selectedWall.color || '#e2e8f0'}
-                    onChange={(e) => updateWall(selectedWall.id, { color: e.target.value })}
-                    className="w-9 h-9 rounded-lg border border-slate-200 cursor-pointer p-0.5 bg-white"
+                    onChange={(hex) => updateWall(selectedWall.id, { color: hex })}
+                    onCommit={pushHistorySnapshot}
                   />
-                  <div className="flex-1 flex gap-1.5 overflow-x-auto py-1">
-                    {['#f8fafc', '#e2e0d8', '#9caf88', '#1e3a5f', '#334155', '#b45309'].map((c) => (
-                      <button
-                        key={c}
-                        onClick={() => updateWall(selectedWall.id, { color: c })}
-                        style={{ backgroundColor: c }}
-                        className="w-6 h-6 rounded-md border border-slate-300 shadow-xs shrink-0"
-                      />
-                    ))}
-                  </div>
                 </div>
               </div>
 
               {/* Wall Quick Actions: Insert Door/Window directly */}
               <div className="space-y-1.5 pt-1">
-                <span className="text-[10px] text-slate-400 font-semibold uppercase">Añadir Hueco Directo</span>
+                <span className="text-[10px] text-slate-500 font-semibold uppercase">Añadir Hueco Directo</span>
                 <div className="grid grid-cols-2 gap-1.5">
                   <button
                     type="button"
@@ -590,12 +609,12 @@ export const PropertyInspector: React.FC = () => {
                 <div>
                   <label className="text-[11px] font-semibold text-slate-500 uppercase flex items-center justify-between">
                     <span>Dimensiones del Espacio ({unit})</span>
-                    <span className="text-[10px] text-sky-600 font-medium">Modifica medidas exactas</span>
+                    <span className="text-[10px] text-sky-700 font-medium">Modifica medidas exactas</span>
                   </label>
                   <div className="grid grid-cols-2 gap-2 mt-1.5">
                     <div>
-                      <span className="text-[10px] text-slate-400 font-medium">Ancho (X)</span>
-                      <input
+                      <span className="text-[10px] text-slate-500 font-medium">Ancho (X)</span>
+                      <input aria-label="Ancho (X)"
                         type="number"
                         step={unit === 'm' ? '0.05' : '10'}
                         value={toDisplay(roomW)}
@@ -610,8 +629,8 @@ export const PropertyInspector: React.FC = () => {
                     </div>
 
                     <div>
-                      <span className="text-[10px] text-slate-400 font-medium">Largo / Fondo (Y)</span>
-                      <input
+                      <span className="text-[10px] text-slate-500 font-medium">Largo / Fondo (Y)</span>
+                      <input aria-label="Largo / Fondo (Y)"
                         type="number"
                         step={unit === 'm' ? '0.05' : '10'}
                         value={toDisplay(roomH)}
@@ -632,8 +651,8 @@ export const PropertyInspector: React.FC = () => {
                   <label className="text-[11px] font-semibold text-slate-500 uppercase">Posición en Planta ({unit})</label>
                   <div className="grid grid-cols-2 gap-2 mt-1.5">
                     <div>
-                      <span className="text-[10px] text-slate-400 font-medium">X Centro</span>
-                      <input
+                      <span className="text-[10px] text-slate-500 font-medium">X Centro</span>
+                      <input aria-label="X Centro"
                         type="number"
                         step={unit === 'm' ? '0.05' : '10'}
                         value={toDisplay(centerX)}
@@ -646,8 +665,8 @@ export const PropertyInspector: React.FC = () => {
                     </div>
 
                     <div>
-                      <span className="text-[10px] text-slate-400 font-medium">Y Centro</span>
-                      <input
+                      <span className="text-[10px] text-slate-500 font-medium">Y Centro</span>
+                      <input aria-label="Y Centro"
                         type="number"
                         step={unit === 'm' ? '0.05' : '10'}
                         value={toDisplay(centerY)}
@@ -663,7 +682,7 @@ export const PropertyInspector: React.FC = () => {
 
                 {/* Ceiling Height */}
                 <div>
-                  <span className="text-[10px] text-slate-400 font-medium">Altura de Paredes / Techo ({unit})</span>
+                  <span className="text-[10px] text-slate-500 font-medium">Altura de Paredes / Techo ({unit})</span>
                   <input
                     type="number"
                     step={unit === 'm' ? '0.05' : '10'}
@@ -697,10 +716,10 @@ export const PropertyInspector: React.FC = () => {
                 <div>
                   <label className="text-[11px] font-semibold text-slate-500 uppercase flex items-center justify-between mb-1.5">
                     <span className="flex items-center gap-1.5">
-                      <Palette className="w-3.5 h-3.5 text-sky-600" />
+                      <Palette className="w-3.5 h-3.5 text-sky-700" />
                       <span>Material de Pavimento</span>
                     </span>
-                    <span className="text-[10px] text-sky-600 font-medium">Texturas PBR 3D</span>
+                    <span className="text-[10px] text-sky-700 font-medium">Texturas PBR 3D</span>
                   </label>
 
                   <select
@@ -750,7 +769,7 @@ export const PropertyInspector: React.FC = () => {
                             <div className="text-[10px] font-bold text-slate-800 truncate leading-tight">
                               {mat.name}
                             </div>
-                            <div className="text-[9px] text-slate-400 truncate leading-tight">
+                            <div className="text-[9px] text-slate-500 truncate leading-tight">
                               {mat.categoryName}
                             </div>
                           </div>
@@ -763,15 +782,15 @@ export const PropertyInspector: React.FC = () => {
                 {/* Color Tint */}
                 <div>
                   <label className="text-[11px] font-semibold text-slate-500 uppercase">Tono / Tinte Personalizado</label>
-                  <div className="flex items-center gap-2 mt-1.5">
-                    <input
-                      type="color"
+                  <div className="mt-1.5">
+                    <ColorPicker
+                      label="Tinte del pavimento"
                       value={selectedRoom.floorColor || '#e2d9cc'}
-                      onChange={(e) => updateRoom(selectedRoom.id, { floorColor: e.target.value })}
-                      className="w-9 h-9 rounded-lg border border-slate-200 cursor-pointer p-0.5 bg-white"
+                      onChange={(hex) => updateRoom(selectedRoom.id, { floorColor: hex })}
+                      onCommit={pushHistorySnapshot}
                     />
-                    <span className="text-xs text-slate-600 font-medium">Ajuste de color 2D y 3D</span>
                   </div>
+                  <p className="text-[10px] text-slate-500 mt-1">Ajuste de color en 2D y 3D</p>
                 </div>
 
                 <div className="pt-2 border-t border-slate-100 space-y-2">
@@ -807,7 +826,7 @@ export const PropertyInspector: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <span className="text-[10px] text-slate-400 font-medium">Ancho ({unit})</span>
+                  <span className="text-[10px] text-slate-500 font-medium">Ancho ({unit})</span>
                   <input
                     type="number"
                     step={unit === 'm' ? '0.05' : '10'}
@@ -820,7 +839,7 @@ export const PropertyInspector: React.FC = () => {
                 </div>
 
                 <div>
-                  <span className="text-[10px] text-slate-400 font-medium">Alto ({unit})</span>
+                  <span className="text-[10px] text-slate-500 font-medium">Alto ({unit})</span>
                   <input
                     type="number"
                     step={unit === 'm' ? '0.05' : '10'}
@@ -834,7 +853,7 @@ export const PropertyInspector: React.FC = () => {
               </div>
 
               <div>
-                <span className="text-[10px] text-slate-400 font-medium">Altura desde suelo / Antepecho ({unit})</span>
+                <span className="text-[10px] text-slate-500 font-medium">Altura desde suelo / Antepecho ({unit})</span>
                 <input
                   type="number"
                   step={unit === 'm' ? '0.05' : '10'}
@@ -908,7 +927,7 @@ export const PropertyInspector: React.FC = () => {
                 </div>
               </div>
 
-              <p className="text-[11px] text-slate-400 leading-relaxed">
+              <p className="text-[11px] text-slate-500 leading-relaxed">
                 Selecciona cualquier mueble, pared o habitación en la vista 2D o en la vista 3D para editar sus cotas exactas, coordenadas y materiales.
               </p>
             </div>

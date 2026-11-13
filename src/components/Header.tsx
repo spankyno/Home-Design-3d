@@ -78,7 +78,7 @@ export const Header: React.FC = () => {
                 • Modificado
               </span>
             ) : (
-              <span className="text-[10px] text-emerald-600 flex items-center gap-0.5">
+              <span className="text-[10px] text-emerald-700 flex items-center gap-0.5">
                 <Check className="w-2.5 h-2.5" /> Guardado
               </span>
             )}
@@ -112,7 +112,7 @@ export const Header: React.FC = () => {
           title="Guardar Proyecto Localmente"
           className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-white rounded-lg transition-all flex items-center gap-1"
         >
-          {isSaving ? <RotateCw className="w-4 h-4 animate-spin text-sky-600" /> : <Save className="w-4 h-4" />}
+          {isSaving ? <RotateCw className="w-4 h-4 animate-spin text-sky-700" /> : <Save className="w-4 h-4" />}
           <span className="text-xs font-medium hidden sm:inline">Guardar</span>
         </button>
 
@@ -146,8 +146,8 @@ export const Header: React.FC = () => {
       <div className="flex items-center gap-3">
         {/* Unit Selector */}
         <div className="flex items-center gap-1.5 text-xs text-slate-600">
-          <span className="text-slate-400 font-medium">Unidad:</span>
-          <select
+          <span className="text-slate-500 font-medium">Unidad:</span>
+          <select aria-label="Unidad de medida"
             value={project.unit}
             onChange={handleUnitChange}
             className="bg-slate-100 hover:bg-slate-200/80 text-slate-800 font-semibold px-2 py-1 rounded-lg border border-slate-200 cursor-pointer focus:outline-hidden text-xs"
@@ -195,7 +195,7 @@ export const Header: React.FC = () => {
         {/* Export Button */}
         <button
           onClick={() => openModal('export')}
-          className="bg-sky-600 hover:bg-sky-700 text-white font-medium px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-xs shadow-sky-200"
+          className="bg-sky-700 hover:bg-sky-800 text-white font-medium px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-xs shadow-sky-200"
         >
           <Download className="w-3.5 h-3.5" />
           <span>Exportar</span>

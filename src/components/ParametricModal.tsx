@@ -555,8 +555,8 @@ export const ParametricModal: React.FC = () => {
               </label>
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <span className="text-[10px] text-slate-400 font-semibold">Ancho (W)</span>
-                  <input
+                  <span className="text-[10px] text-slate-500 font-semibold">Ancho (W)</span>
+                  <input aria-label="Ancho (W)"
                     type="number"
                     value={config.exteriorWidth}
                     onChange={(e) => setConfig({ ...config, exteriorWidth: parseInt(e.target.value) || 0 })}
@@ -564,8 +564,8 @@ export const ParametricModal: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 font-semibold">Alto (H)</span>
-                  <input
+                  <span className="text-[10px] text-slate-500 font-semibold">Alto (H)</span>
+                  <input aria-label="Alto (H)"
                     type="number"
                     value={config.exteriorHeight}
                     onChange={(e) => setConfig({ ...config, exteriorHeight: parseInt(e.target.value) || 0 })}
@@ -573,8 +573,8 @@ export const ParametricModal: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 font-semibold">Fondo (D)</span>
-                  <input
+                  <span className="text-[10px] text-slate-500 font-semibold">Fondo (D)</span>
+                  <input aria-label="Fondo (D)"
                     type="number"
                     value={config.exteriorDepth}
                     onChange={(e) => setConfig({ ...config, exteriorDepth: parseInt(e.target.value) || 0 })}
@@ -587,8 +587,8 @@ export const ParametricModal: React.FC = () => {
             {/* Thickness & Plinth */}
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <span className="text-[10px] text-slate-400 font-semibold">Grosor Tableros</span>
-                <select
+                <span className="text-[10px] text-slate-500 font-semibold">Grosor Tableros</span>
+                <select aria-label="Grosor Tableros"
                   value={config.boardThickness}
                   onChange={(e) => setConfig({ ...config, boardThickness: parseInt(e.target.value) || 19 })}
                   className="w-full mt-1 text-xs font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded-lg p-2"
@@ -601,8 +601,8 @@ export const ParametricModal: React.FC = () => {
               </div>
 
               <div>
-                <span className="text-[10px] text-slate-400 font-semibold">Zócalo Inferior</span>
-                <input
+                <span className="text-[10px] text-slate-500 font-semibold">Zócalo Inferior</span>
+                <input aria-label="Zócalo Inferior"
                   type="number"
                   value={config.plinthHeight}
                   onChange={(e) => setConfig({ ...config, plinthHeight: parseInt(e.target.value) || 0 })}
@@ -642,9 +642,9 @@ export const ParametricModal: React.FC = () => {
               <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
                 {config.shelves.map((s, idx) => (
                   <div key={s.id} className="flex items-center gap-2 bg-slate-50 p-2 rounded-lg text-xs">
-                    <span className="text-slate-400 font-mono text-[10px]">#{idx + 1}</span>
+                    <span className="text-slate-500 font-mono text-[10px]">#{idx + 1}</span>
                     <span className="text-slate-600">Altura:</span>
-                    <input
+                    <input aria-label="Altura:"
                       type="number"
                       value={s.heightFromBase}
                       onChange={(e) => {
@@ -656,7 +656,7 @@ export const ParametricModal: React.FC = () => {
                       }}
                       className="w-20 font-bold bg-white border border-slate-200 rounded px-1.5 py-0.5 text-slate-800"
                     />
-                    <span className="text-slate-400 text-[10px]">mm</span>
+                    <span className="text-slate-500 text-[10px]">mm</span>
                     <button
                       onClick={() =>
                         setConfig({
@@ -693,9 +693,9 @@ export const ParametricModal: React.FC = () => {
               <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
                 {config.drawers.map((d, idx) => (
                   <div key={d.id} className="flex items-center gap-2 bg-slate-50 p-2 rounded-lg text-xs">
-                    <span className="text-slate-400 font-mono text-[10px]">#{idx + 1}</span>
+                    <span className="text-slate-500 font-mono text-[10px]">#{idx + 1}</span>
                     <span className="text-slate-600">Frente:</span>
-                    <input
+                    <input aria-label="Frente:"
                       type="number"
                       value={d.frontHeight}
                       onChange={(e) => {
@@ -707,7 +707,7 @@ export const ParametricModal: React.FC = () => {
                       }}
                       className="w-16 font-bold bg-white border border-slate-200 rounded px-1.5 py-0.5"
                     />
-                    <span className="text-slate-400 text-[10px]">mm</span>
+                    <span className="text-slate-500 text-[10px]">mm</span>
                     <button
                       onClick={() =>
                         setConfig({
@@ -741,7 +741,7 @@ export const ParametricModal: React.FC = () => {
                 onClick={handleSaveToPersonalLibrary}
                 className="w-full bg-slate-100 hover:bg-slate-200/80 text-slate-700 font-semibold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all"
               >
-                {savedSuccess ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <Download className="w-4 h-4" />}
+                {savedSuccess ? <CheckCircle2 className="w-4 h-4 text-emerald-700" /> : <Download className="w-4 h-4" />}
                 <span>{savedSuccess ? 'Guardado en Mi Biblioteca' : 'Guardar como Plantilla'}</span>
               </button>
             </div>

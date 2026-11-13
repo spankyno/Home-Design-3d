@@ -14,9 +14,9 @@ Funciona de manera completamente **offline y sin registro de usuario**, almacena
    - Rejilla configurable (50, 100, 200, 500, 1000 mm) con ajuste magnético (*Snap*) inteligente a rejilla y esquinas.
 
 2. **Editor de Planos en 2D**:
-   - Creación de habitaciones rectangulares (arrastrando o mediante clic en dos esquinas) con cálculo automático de 4 paredes y suelo (ej. 4000 × 3000 mm = 12 m² útiles, 14 m de perímetro).
+   - Creación de habitaciones a medida (ancho × largo) con cálculo automático de 4 paredes y suelo (ej. 4000 × 3000 mm = 12 m² útiles, 14 m de perímetro).
    - Botón directo de **Habitación 4×3 m Rápida** con un solo clic.
-   - Dibujo continuo de paredes con cotas en tiempo real y grosor configurable (100, 150, 200, 300 mm).
+   - Paredes individuales con longitud, sentido y grosor configurable (100, 150, 200, 300 mm), editables después con asas.
    - Cálculo automático de superficies construidas, superficies útiles y perímetros.
    - Puertas batientes con previsualización dinámica acoplada a pared y arco de apertura abatible, puertas dobles, correderas, ventanas con antepecho y balconeras.
 
@@ -60,6 +60,13 @@ Funciona de manera completamente **offline y sin registro de usuario**, almacena
 
 ---
 
+### Color y acabado
+Cada mueble se personaliza con **64 colores** (8 familias × 8 tonos, selector libre, código hexadecimal, cuentagotas del sistema y últimos usados) y **33 acabados** agrupados en maderas, tapizados y cuero, metales, piedra y cerámica, y lacados y laminados. Las muestras de acabado se previsualizan tintadas con el color actual.
+
+- Los materiales *naturales* (roble, latón, mármol…) aplican también su color; los pintados o tapizados conservan el elegido.
+- Se aplican a **todas las superficies principales** del modelo 3D: encimeras, sanitarios, escalera, lámparas y muebles paramétricos incluidos. Solo el herraje (cromo, vidrio, goma, pantallas luminosas) es fijo. Un test recorre las 37 piezas del catálogo y comprueba que cambian al cambiar color y acabado.
+- La misma paleta se usa para el color de paredes y el tinte del pavimento. Los proyectos antiguos se migran automáticamente a los acabados actuales.
+
 ### Vista 3D del mobiliario
 Cada pieza del catálogo tiene un **modelo 3D procedural propio** (`src/editor3d/furnitureModels.ts`): sofás con cojines y patas, camas con cabecero, almohadas y edredón, cocinas con puertas, tiradores y fregadero con seno, baño, escalera, lámparas con pantalla luminosa, etc. Los acabados llevan **textura procedural** (madera con veta, tela, acero cepillado, cuarzo, cerámica) teñida con el color del mueble (`src/materials/furniture.ts`), con UV en milímetros reales. La pieza seleccionada se resalta con un contorno y un ligero tinte. Los muebles paramétricos muestran sus puertas. Cada modelo respeta su huella (ancho × fondo) y tiene un presupuesto de rendimiento comprobado por tests.
 
@@ -88,6 +95,8 @@ Cada gesto es **un único paso** de deshacer. Un simple clic nunca desplaza el o
 src/
 ├── catalog/          # Catálogo de muebles y definiciones arquitectónicas
 ├── components/       # Componentes de interfaz (Header, Sidebar, Inspector, Modales)
+│   ├── ColorFinishPanel.tsx    # Paleta de colores y selector de acabados
+│   ├── Footer.tsx              # Footer: Acerca de, blog, Aitor Hub, contacto
 │   ├── DimensionEditModal.tsx  # Editor de separación exacta por cotas
 │   ├── ExportModal.tsx         # Generadores de SVG, PNG, CSV, JSON y GLB
 │   ├── Header.tsx              # Barra superior y herramientas globales
@@ -99,7 +108,13 @@ src/
 ├── editor2d/         # Motor de renderizado en Canvas 2D
 │   └── EditorCanvas2D.tsx
 ├── editor3d/         # Motor de renderizado tridimensional con Three.js
-│   └── EditorCanvas3D.tsx
+│   ├── EditorCanvas3D.tsx
+│   ├── furnitureModels.ts      # Modelos 3D procedurales de cada pieza
+│   └── sceneBuilders.ts        # Muros, suelos, aberturas y escena completa
+├── materials/        # Texturas procedurales y catálogo de acabados/colores
+│   ├── finishes.ts
+│   └── furniture.ts
+├── site.ts           # Datos públicos del autor y enlaces del footer
 ├── geometry/         # Motor geométrico puro (vectores, polígonos, cotas, snap)
 │   └── index.ts
 ├── parametric/       # Reglas paramétricas, validación y despiece de tableros
@@ -114,6 +129,26 @@ src/
 └── types/            # Definiciones de tipos TypeScript del modelo CAD
     └── index.ts
 ```
+
+---
+
+## SEO, página «Acerca de» y footer
+
+- **Footer** en la aplicación (`src/components/Footer.tsx`, datos en `src/site.ts`): Acerca de, blog, Aitor Hub, contacto y copyright.
+- **Página «Acerca de»** (`acerca-de/index.html`): HTML estático y rastreable con funcionamiento, stack tecnológico (versiones reales leídas de `node_modules` en cada build), atajos, autor, contacto y FAQ.
+- **SEO técnico**: `title`/`description` por página, canonical, `hreflang`, Open Graph y Twitter Cards (`public/og-image.jpg`), datos estructurados JSON-LD (WebSite, WebApplication, Person, AboutPage, BreadcrumbList, FAQPage), contenido de respaldo para rastreadores sin JavaScript, `manifest.webmanifest` e iconos (incluido *maskable*), `404.html` con `noindex`, `sitemap.xml` y `robots.txt` generados en cada build.
+- **Rendimiento**: la vista 3D (Three.js), la exportación y el diseñador paramétrico se cargan bajo demanda.
+- **Seguridad y caché** (`public/_headers`, formato Cloudflare Pages/Netlify): CSP estricta, `nosniff`, `Referrer-Policy`, `Permissions-Policy` y caché inmutable para `/assets/*`.
+
+**Configura la URL pública antes de desplegar.** El canonical, Open Graph, sitemap y robots necesitan la URL absoluta del sitio:
+
+```bash
+SITE_URL=https://tu-dominio.com npm run build
+```
+
+(En Cloudflare Pages: *Settings → Environment variables → `SITE_URL`.* Si no se define, se usa `https://my-home-design.pages.dev`, que casi seguro no es la tuya.)
+
+Medido con Lighthouse sobre el build servido con esas cabeceras: **Rendimiento 100 · Accesibilidad 100 · Buenas prácticas 100 · SEO 100** (aplicación y página «Acerca de»).
 
 ---
 

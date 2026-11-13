@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useEditorStore } from './state/useEditorStore';
 import { loadLastSessionProject } from './storage';
@@ -7,10 +7,8 @@ import { ToolSidebar } from './components/ToolSidebar';
 import { PropertyInspector } from './components/PropertyInspector';
 import { StatusBar } from './components/StatusBar';
 import { EditorCanvas2D } from './editor2d/EditorCanvas2D';
-import { EditorCanvas3D } from './editor3d/EditorCanvas3D';
-import { ParametricModal } from './components/ParametricModal';
+import { Footer } from './components/Footer';
 import { ProjectsModal } from './components/ProjectsModal';
-import { ExportModal } from './components/ExportModal';
 import { DimensionEditModal } from './components/DimensionEditModal';
 
 const AUTOSAVE_DELAY_MS = 1500;
@@ -29,9 +27,22 @@ function isTypingTarget(target: EventTarget | null): boolean {
   return ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) || target.isContentEditable;
 }
 
+// Heavy, rarely-needed parts load on demand: the 3D view (Three.js), the export dialog (GLTF exporter) and the
+// parametric designer. This keeps the first paint (and Core Web Vitals) light.
+const EditorCanvas3D = lazy(() => import('./editor3d/EditorCanvas3D').then((m) => ({ default: m.EditorCanvas3D })));
+const ParametricModal = lazy(() => import('./components/ParametricModal').then((m) => ({ default: m.ParametricModal })));
+const ExportModal = lazy(() => import('./components/ExportModal').then((m) => ({ default: m.ExportModal })));
+
+const ViewLoading: React.FC<{ label: string }> = ({ label }) => (
+  <div role="status" className="w-full h-full flex items-center justify-center text-sm font-medium text-slate-500">
+    {label}
+  </div>
+);
+
 export const App: React.FC = () => {
   const {
     viewMode,
+    activeModal,
     project,
     isDirty,
     setProject,
@@ -47,6 +58,7 @@ export const App: React.FC = () => {
   } = useEditorStore(
     useShallow((s) => ({
       viewMode: s.viewMode,
+      activeModal: s.activeModal,
       project: s.project,
       isDirty: s.isDirty,
       setProject: s.setProject,
@@ -167,7 +179,13 @@ export const App: React.FC = () => {
         <ToolSidebar />
 
         <div className="flex-1 h-full relative overflow-hidden bg-slate-100">
-          {viewMode === '2d' ? <EditorCanvas2D /> : <EditorCanvas3D />}
+          {viewMode === '2d' ? (
+            <EditorCanvas2D />
+          ) : (
+            <Suspense fallback={<ViewLoading label="Cargando la vista 3D…" />}>
+              <EditorCanvas3D />
+            </Suspense>
+          )}
         </div>
 
         <PropertyInspector />
@@ -176,10 +194,15 @@ export const App: React.FC = () => {
       {/* Bottom Status Bar */}
       <StatusBar />
 
-      {/* Modals & Popovers */}
-      <ParametricModal />
+      {/* Site footer: About page, blog, Aitor Hub, contact, copyright */}
+      <Footer />
+
+      {/* Modals & Popovers (heavy ones are mounted only while open, so their code is fetched on demand) */}
+      <Suspense fallback={null}>
+        {activeModal === 'parametric_designer' && <ParametricModal />}
+        {activeModal === 'export' && <ExportModal />}
+      </Suspense>
       <ProjectsModal />
-      <ExportModal />
       <DimensionEditModal />
     </div>
   );

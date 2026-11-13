@@ -2,17 +2,148 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Home Design - Planificador de Espacios 2D y 3D</title>
-    <meta name="description" content="Aplicación web profesional de diseño de interiores y planificación de espacios en 2D y 3D con cotas dinámicas, motor geométrico y muebles paramétricos." />
-    <meta property="og:title" content="My Home Design - Planificador de Espacios 2D y 3D" />
-    <meta property="og:description" content="Aplicación web profesional de diseño de interiores y planificación de espacios en 2D y 3D con cotas dinámicas, motor geométrico y muebles paramétricos." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Primary SEO -->
+    <title>My Home Design: diseña planos y viviendas en 2D y 3D online</title>
+    <meta
+      name="description"
+      content="Diseña el plano de tu casa en 2D con cotas y medidas reales, amuébala con 37 piezas, elige color y acabado y recórrela en 3D. Sin registro, en tu navegador."
+    />
+    <link rel="canonical" href="%SITE_URL%/" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="author" content="Aitor Sánchez Gutiérrez" />
+    <meta name="application-name" content="My Home Design" />
+    <meta name="theme-color" content="#4f46e5" />
+    <meta name="color-scheme" content="light" />
+    <link rel="alternate" hreflang="es" href="%SITE_URL%/" />
+    <link rel="alternate" hreflang="x-default" href="%SITE_URL%/" />
+
+    <!-- Icons & PWA -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="My Home Design" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:title" content="My Home Design: diseña planos y viviendas en 2D y 3D online" />
+    <meta
+      property="og:description"
+      content="Dibuja tu vivienda en 2D, amuébala con medidas reales, elige colores y acabados y míralo en 3D. Sin registro."
+    />
+    <meta property="og:image" content="%SITE_URL%/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="My Home Design: plano 2D y vista 3D de una vivienda amueblada" />
+
+    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="My Home Design: diseña planos y viviendas en 2D y 3D" />
+    <meta
+      name="twitter:description"
+      content="Dibuja tu vivienda en 2D, amuébala con medidas reales y míralo en 3D. Sin registro."
+    />
+    <meta name="twitter:image" content="%SITE_URL%/og-image.jpg" />
+    <meta name="twitter:image:alt" content="My Home Design: plano 2D y vista 3D de una vivienda amueblada" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "%SITE_URL%/#website",
+            "url": "%SITE_URL%/",
+            "name": "My Home Design",
+            "description": "Editor online de planos y viviendas en 2D y 3D.",
+            "inLanguage": "es",
+            "publisher": { "@id": "%SITE_URL%/#author" }
+          },
+          {
+            "@type": "Person",
+            "@id": "%SITE_URL%/#author",
+            "name": "Aitor Sánchez Gutiérrez",
+            "url": "https://aitorsanchez.pages.dev",
+            "sameAs": ["https://aitorsanchez.pages.dev", "https://aitorhub.vercel.app"]
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "%SITE_URL%/#app",
+            "name": "My Home Design",
+            "url": "%SITE_URL%/",
+            "description": "Diseña el plano de tu vivienda en 2D con medidas reales, amuébala, elige color y acabado de cada pieza y recórrela en 3D. Funciona en el navegador y no requiere registro.",
+            "applicationCategory": "DesignApplication",
+            "operatingSystem": "Cualquiera (navegador web moderno)",
+            "browserRequirements": "Requiere JavaScript y WebGL",
+            "inLanguage": "es",
+            "isAccessibleForFree": true,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+            "image": "%SITE_URL%/og-image.jpg",
+            "author": { "@id": "%SITE_URL%/#author" },
+            "copyrightHolder": { "@id": "%SITE_URL%/#author" },
+            "copyrightYear": 2026,
+            "dateModified": "%BUILD_DATE%",
+            "featureList": [
+              "Editor de planos 2D con cotas, medición y ajuste magnético",
+              "Catálogo de 37 muebles con medidas reales y muebles paramétricos",
+              "Puertas y ventanas colocables sobre las paredes",
+              "64 colores y 33 acabados con textura",
+              "Vista 3D con secciones de muro y sombras",
+              "Exportación a PNG, SVG, CSV, GLB y JSON",
+              "Guardado automático en el propio navegador"
+            ],
+            "mainEntityOfPage": "%SITE_URL%/acerca-de/"
+          }
+        ]
+      }
+    </script>
+
+    <!-- Critical CSS for the crawlable fallback shown until the app mounts -->
+    <style>
+      html,body{height:100%;margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#0f172a;background:#f8fafc}
+      #seo-fallback{max-width:46rem;margin:0 auto;padding:3rem 1.25rem}
+      #seo-fallback h1{font-size:1.9rem;line-height:1.15;margin:.5rem 0 1rem}
+      #seo-fallback h2{font-size:1.1rem;margin:1.6rem 0 .5rem}
+      #seo-fallback p,#seo-fallback li{line-height:1.6;color:#334155}
+      #seo-fallback a{color:#0369a1}
+      #seo-fallback nav ul{display:flex;gap:1rem;flex-wrap:wrap;padding:0;list-style:none}
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Replaced by the React app as soon as it mounts. Gives crawlers and no-JS users real content. -->
+      <main id="seo-fallback">
+        <h1>My Home Design: diseña planos y viviendas en 2D y 3D</h1>
+        <p>
+          My Home Design es un editor online para dibujar el plano de una casa o un piso con medidas reales, amueblarlo
+          con un catálogo de 37 piezas, elegir el color y el acabado de cada una y recorrerlo en 3D. Funciona en el
+          navegador, no requiere registro y guarda tus proyectos en tu propio equipo.
+        </p>
+        <h2>Qué puedes hacer</h2>
+        <ul>
+          <li>Dibujar habitaciones y paredes con cotas, rejilla y ajuste magnético.</li>
+          <li>Colocar muebles, puertas y ventanas con medidas reales y moverlos, girarlos y redimensionarlos.</li>
+          <li>Elegir entre 64 colores y 33 acabados (madera, tela, cuero, metal, piedra…).</li>
+          <li>Ver el resultado en 3D con sombras y exportarlo a PNG, SVG, GLB, CSV o JSON.</li>
+        </ul>
+        <nav aria-label="Enlaces del sitio">
+          <ul>
+            <li><a href="/acerca-de/">Acerca de My Home Design</a></li>
+            <li><a href="https://aitorsanchez.pages.dev" rel="noopener">Blog</a></li>
+            <li><a href="https://aitorhub.vercel.app" rel="noopener">Aitor Hub</a></li>
+            <li><a href="https://aitorsanchez.pages.dev/contacto" rel="noopener">Contacto</a></li>
+          </ul>
+        </nav>
+        <noscript><p><strong>Esta aplicación necesita JavaScript</strong> para funcionar. Actívalo en tu navegador para diseñar tu vivienda.</p></noscript>
+        <p>© 2026 Aitor Sánchez Gutiérrez. Todos los derechos reservados.</p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Acerca de My Home Design: funcionamiento, tecnología y autor</title>
+    <meta
+      name="description"
+      content="Cómo funciona My Home Design, el editor de planos 2D y 3D en tu navegador: tecnología (React, TypeScript, Three.js), guardado local y contacto del autor."
+    />
+    <link rel="canonical" href="%SITE_URL%/acerca-de/" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="author" content="Aitor Sánchez Gutiérrez" />
+    <meta name="theme-color" content="#4f46e5" />
+    <link rel="alternate" hreflang="es" href="%SITE_URL%/acerca-de/" />
+    <link rel="alternate" hreflang="x-default" href="%SITE_URL%/acerca-de/" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="My Home Design" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:url" content="%SITE_URL%/acerca-de/" />
+    <meta property="og:title" content="Acerca de My Home Design: funcionamiento, tecnología y autor" />
+    <meta
+      property="og:description"
+      content="Cómo funciona el editor de planos 2D y 3D My Home Design, con qué tecnología está hecho y quién lo ha creado."
+    />
+    <meta property="og:image" content="%SITE_URL%/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="My Home Design: plano 2D y vista 3D de una vivienda amueblada" />
+    <meta property="article:author" content="Aitor Sánchez Gutiérrez" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Acerca de My Home Design" />
+    <meta name="twitter:description" content="Funcionamiento, stack tecnológico y datos de contacto del autor." />
+    <meta name="twitter:image" content="%SITE_URL%/og-image.jpg" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "AboutPage",
+            "@id": "%SITE_URL%/acerca-de/#page",
+            "url": "%SITE_URL%/acerca-de/",
+            "name": "Acerca de My Home Design",
+            "description": "Funcionamiento, stack tecnológico y datos de contacto del autor de My Home Design.",
+            "inLanguage": "es",
+            "dateModified": "%BUILD_DATE%",
+            "isPartOf": { "@type": "WebSite", "name": "My Home Design", "url": "%SITE_URL%/" },
+            "about": { "@type": "WebApplication", "name": "My Home Design", "url": "%SITE_URL%/" },
+            "author": { "@id": "%SITE_URL%/#author" },
+            "breadcrumb": { "@id": "%SITE_URL%/acerca-de/#breadcrumb" },
+            "mainEntity": { "@id": "%SITE_URL%/acerca-de/#faq" }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "%SITE_URL%/acerca-de/#breadcrumb",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "My Home Design", "item": "%SITE_URL%/" },
+              { "@type": "ListItem", "position": 2, "name": "Acerca de", "item": "%SITE_URL%/acerca-de/" }
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "%SITE_URL%/#author",
+            "name": "Aitor Sánchez Gutiérrez",
+            "url": "https://aitorsanchez.pages.dev",
+            "sameAs": ["https://aitorsanchez.pages.dev", "https://aitorhub.vercel.app"],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "contacto",
+              "url": "https://aitorsanchez.pages.dev/contacto",
+              "availableLanguage": "es"
+            }
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "%SITE_URL%/acerca-de/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "¿Necesito registrarme para usar My Home Design?",
+                "acceptedAnswer": { "@type": "Answer", "text": "No. La aplicación funciona directamente en el navegador, sin cuentas ni inicio de sesión." }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Dónde se guardan mis proyectos?",
+                "acceptedAnswer": { "@type": "Answer", "text": "En tu propio navegador, en IndexedDB. Se guardan automáticamente mientras trabajas y no se envían a ningún servidor." }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Qué pasa si borro los datos del navegador?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Los proyectos guardados localmente se perderían. Para conservarlos, expórtalos como archivo JSON desde el menú Exportar y vuelve a importarlos cuando quieras." }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Puedo llevar mi diseño a otros programas?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Sí. Puedes exportar el plano como PNG o SVG, las mediciones como CSV, el modelo 3D como GLB (compatible con Blender y otros visores 3D) y el proyecto completo como JSON." }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Qué necesito para ver la vista 3D?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Un navegador moderno con WebGL activado, algo habitual en cualquier equipo actual." }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+
+  <body class="bg-slate-50 text-slate-800 antialiased">
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-white focus:text-sky-700 focus:font-semibold focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg"
+    >
+      Saltar al contenido
+    </a>
+
+    <header class="bg-white border-b border-slate-200">
+      <div class="max-w-4xl mx-auto px-5 py-3 flex items-center justify-between gap-4">
+        <a href="/" class="flex items-center gap-2.5 font-bold text-slate-900" aria-label="My Home Design, ir a la aplicación">
+          <img src="/favicon.svg" alt="" width="32" height="32" class="rounded-lg" />
+          <span>My Home Design</span>
+        </a>
+        <nav aria-label="Principal" class="flex items-center gap-5 text-sm font-semibold">
+          <a href="#funcionamiento" class="hidden sm:inline text-slate-600 hover:text-sky-700">Funcionamiento</a>
+          <a href="#tecnologia" class="hidden sm:inline text-slate-600 hover:text-sky-700">Tecnología</a>
+          <a href="#autor" class="hidden sm:inline text-slate-600 hover:text-sky-700">Autor</a>
+          <a href="/" class="bg-sky-700 hover:bg-sky-800 text-white px-4 py-2 rounded-lg">Abrir la aplicación</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="contenido" class="max-w-4xl mx-auto px-5 py-10 space-y-14">
+      <nav aria-label="Migas de pan" class="text-sm text-slate-600">
+        <ol class="flex items-center gap-2">
+          <li><a href="/" class="hover:text-sky-700 underline underline-offset-2">Inicio</a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" class="font-semibold text-slate-700">Acerca de</li>
+        </ol>
+      </nav>
+
+      <section aria-labelledby="titulo">
+        <h1 id="titulo" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">Acerca de My Home Design</h1>
+        <p class="mt-4 text-lg leading-relaxed text-slate-600">
+          My Home Design es un editor online para diseñar el plano de una vivienda en 2D con medidas reales, amueblarla,
+          elegir el color y el acabado de cada pieza y recorrerla en 3D. Funciona por completo en el navegador: sin
+          registro, sin instalación y sin enviar tus proyectos a ningún servidor.
+        </p>
+        <p class="mt-4">
+          <a href="/" class="inline-block bg-sky-700 hover:bg-sky-800 text-white font-semibold px-5 py-2.5 rounded-lg">Empezar a diseñar</a>
+        </p>
+      </section>
+
+      <section id="funcionamiento" aria-labelledby="h-funcionamiento" class="scroll-mt-6">
+        <h2 id="h-funcionamiento" class="text-2xl font-bold text-slate-900">Cómo funciona la aplicación</h2>
+        <p class="mt-3 text-slate-600 leading-relaxed">
+          El flujo de trabajo sigue el orden natural de un proyecto de interiorismo: primero la planta, luego el mobiliario,
+          después el acabado y, por último, la revisión en 3D y la exportación.
+        </p>
+
+        <ol class="mt-6 space-y-5">
+          <li class="bg-white rounded-xl border border-slate-200 p-5">
+            <h3 class="font-bold text-slate-900">1. Dibuja la planta</h3>
+            <p class="mt-2 text-slate-600 leading-relaxed">
+              Crea habitaciones a medida (ancho × largo) que generan automáticamente sus cuatro paredes y el suelo, o
+              inserta paredes sueltas con la longitud y el sentido que necesites. Trabaja en milímetros, centímetros o
+              metros. La rejilla y el ajuste magnético a vértices facilitan cerrar los espacios, y la herramienta
+              <strong>Medir</strong> da la distancia (y los desplazamientos en X e Y) entre dos puntos cualquiera.
+            </p>
+          </li>
+          <li class="bg-white rounded-xl border border-slate-200 p-5">
+            <h3 class="font-bold text-slate-900">2. Amuebla el espacio</h3>
+            <p class="mt-2 text-slate-600 leading-relaxed">
+              El catálogo reúne 37 piezas por estancias (salón, dormitorio, cocina, baño, comedor, oficina y
+              almacenaje) con medidas reales, y un diseñador de armarios paramétricos con baldas, cajones y puertas.
+              Las puertas y ventanas se colocan sobre las paredes con su tamaño real.
+            </p>
+          </li>
+          <li class="bg-white rounded-xl border border-slate-200 p-5">
+            <h3 class="font-bold text-slate-900">3. Ajusta con el ratón y el teclado</h3>
+            <p class="mt-2 text-slate-600 leading-relaxed">
+              Selecciona cualquier elemento para moverlo, girarlo o cambiar su tamaño con las asas; los muebles se
+              imantan a las paredes y a otras piezas. Las cotas dinámicas muestran la distancia a los obstáculos y
+              permiten fijar una separación exacta. Todo se puede deshacer y rehacer.
+            </p>
+          </li>
+          <li class="bg-white rounded-xl border border-slate-200 p-5">
+            <h3 class="font-bold text-slate-900">4. Elige color y acabado</h3>
+            <p class="mt-2 text-slate-600 leading-relaxed">
+              Cada mueble admite cualquier color (64 tonos en ocho familias, selector libre, código hexadecimal y
+              cuentagotas) y 33 acabados: maderas, tapizados y cuero, metales, piedra y cerámica, lacados y laminados.
+              El resultado se refleja tanto en el plano como en el modelo 3D, con texturas procedurales.
+            </p>
+          </li>
+          <li class="bg-white rounded-xl border border-slate-200 p-5">
+            <h3 class="font-bold text-slate-900">5. Recórrelo en 3D</h3>
+            <p class="mt-2 text-slate-600 leading-relaxed">
+              La vista 3D permite orbitar la vivienda, cambiar entre perspectiva, planta, alzado frontal y lateral,
+              mostrar los muros completos, translúcidos o en sección baja, y activar sombras.
+            </p>
+          </li>
+          <li class="bg-white rounded-xl border border-slate-200 p-5">
+            <h3 class="font-bold text-slate-900">6. Guarda y exporta</h3>
+            <p class="mt-2 text-slate-600 leading-relaxed">
+              Los proyectos se guardan solos en el navegador. Puedes exportar el plano como PNG o SVG, las mediciones
+              como CSV, el modelo 3D como GLB y el proyecto completo como JSON para copiarlo o volver a importarlo.
+            </p>
+          </li>
+        </ol>
+
+        <h3 class="mt-10 text-lg font-bold text-slate-900">Atajos de teclado</h3>
+        <div class="mt-3 overflow-x-auto">
+          <table class="w-full text-sm bg-white rounded-xl border border-slate-200">
+            <caption class="sr-only">Atajos de teclado de My Home Design</caption>
+            <thead>
+              <tr class="text-left text-slate-600 border-b border-slate-200">
+                <th scope="col" class="px-4 py-2 font-semibold">Acción</th>
+                <th scope="col" class="px-4 py-2 font-semibold">Atajo</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr><td class="px-4 py-2">Deshacer / rehacer</td><td class="px-4 py-2"><kbd>Ctrl</kbd> + <kbd>Z</kbd> / <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></td></tr>
+              <tr><td class="px-4 py-2">Guardar ahora</td><td class="px-4 py-2"><kbd>Ctrl</kbd> + <kbd>S</kbd></td></tr>
+              <tr><td class="px-4 py-2">Duplicar la selección</td><td class="px-4 py-2"><kbd>Ctrl</kbd> + <kbd>D</kbd></td></tr>
+              <tr><td class="px-4 py-2">Mover la selección</td><td class="px-4 py-2">Flechas (10 mm); <kbd>Shift</kbd> una celda de rejilla; <kbd>Alt</kbd> 1 mm</td></tr>
+              <tr><td class="px-4 py-2">Eliminar la selección</td><td class="px-4 py-2"><kbd>Supr</kbd></td></tr>
+              <tr><td class="px-4 py-2">Salir de la herramienta / deseleccionar</td><td class="px-4 py-2"><kbd>Esc</kbd></td></tr>
+              <tr><td class="px-4 py-2">Arrastrar sin imán</td><td class="px-4 py-2">Mantener <kbd>Alt</kbd></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tecnologia" aria-labelledby="h-tecnologia" class="scroll-mt-6">
+        <h2 id="h-tecnologia" class="text-2xl font-bold text-slate-900">Stack tecnológico</h2>
+        <p class="mt-3 text-slate-600 leading-relaxed">
+          Es una aplicación de una sola página (SPA) sin backend. Todo el cálculo, el dibujo y el almacenamiento ocurren
+          en el navegador.
+        </p>
+
+        <div class="mt-5 overflow-x-auto">
+          <table class="w-full text-sm bg-white rounded-xl border border-slate-200">
+            <caption class="sr-only">Tecnologías utilizadas y su función</caption>
+            <thead>
+              <tr class="text-left text-slate-600 border-b border-slate-200">
+                <th scope="col" class="px-4 py-2 font-semibold">Tecnología</th>
+                <th scope="col" class="px-4 py-2 font-semibold">Versión</th>
+                <th scope="col" class="px-4 py-2 font-semibold">Para qué se usa</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr><th scope="row" class="px-4 py-2 text-left font-semibold">React</th><td class="px-4 py-2">%PKG_react%</td><td class="px-4 py-2">Interfaz de usuario: paneles, inspector, diálogos.</td></tr>
+              <tr><th scope="row" class="px-4 py-2 text-left font-semibold">TypeScript</th><td class="px-4 py-2">%PKG_typescript%</td><td class="px-4 py-2">Tipado estricto de todo el código.</td></tr>
+              <tr><th scope="row" class="px-4 py-2 text-left font-semibold">Vite</th><td class="px-4 py-2">%PKG_vite%</td><td class="px-4 py-2">Servidor de desarrollo y empaquetado con carga diferida.</td></tr>
+              <tr><th scope="row" class="px-4 py-2 text-left font-semibold">Tailwind CSS</th><td class="px-4 py-2">%PKG_tailwindcss%</td><td class="px-4 py-2">Estilos y diseño responsive.</td></tr>
+              <tr><th scope="row" class="px-4 py-2 text-left font-semibold">Zustand</th><td class="px-4 py-2">%PKG_zustand%</td><td class="px-4 py-2">Estado global del editor, historial de deshacer y selección.</td></tr>
+              <tr><th scope="row" class="px-4 py-2 text-left font-semibold">Canvas 2D</th><td class="px-4 py-2">Nativo</td><td class="px-4 py-2">Editor del plano: dibujo, selección, asas, imán y cotas.</td></tr>
+              <tr><th scope="row" class="px-4 py-2 text-left font-semibold">Three.js</th><td class="px-4 py-2">%PKG_three%</td><td class="px-4 py-2">Vista 3D, modelos procedurales, texturas, sombras y exportación GLB.</td></tr>
+              <tr><th scope="row" class="px-4 py-2 text-left font-semibold">Dexie (IndexedDB)</th><td class="px-4 py-2">%PKG_dexie%</td><td class="px-4 py-2">Guardado local de proyectos en el navegador.</td></tr>
+              <tr><th scope="row" class="px-4 py-2 text-left font-semibold">Lucide</th><td class="px-4 py-2">%PKG_lucide-react%</td><td class="px-4 py-2">Iconografía.</td></tr>
+              <tr><th scope="row" class="px-4 py-2 text-left font-semibold">Vitest</th><td class="px-4 py-2">%PKG_vitest%</td><td class="px-4 py-2">Pruebas unitarias: geometría, selección, historial, exportación y modelos 3D.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="mt-8 text-lg font-bold text-slate-900">Decisiones de diseño</h3>
+        <ul class="mt-3 list-disc pl-6 space-y-2 text-slate-600 leading-relaxed">
+          <li><strong>Privacidad por diseño:</strong> no hay servidor de datos; los proyectos nunca salen de tu equipo.</li>
+          <li><strong>Geometría pura y testeada:</strong> el cálculo de cotas, selección, imán y redimensionado vive en módulos sin dependencias de interfaz.</li>
+          <li><strong>3D procedural:</strong> cada pieza del catálogo se construye por código (sin descargar modelos), con texturas generadas en el navegador y color y acabado aplicados a todas sus superficies.</li>
+          <li><strong>Rendimiento:</strong> la vista 3D y los diálogos pesados se cargan solo cuando se necesitan.</li>
+        </ul>
+      </section>
+
+      <section id="autor" aria-labelledby="h-autor" class="scroll-mt-6">
+        <h2 id="h-autor" class="text-2xl font-bold text-slate-900">Autor y contacto</h2>
+        <div class="mt-4 bg-white rounded-xl border border-slate-200 p-6">
+          <p class="text-lg font-bold text-slate-900">Aitor Sánchez Gutiérrez</p>
+          <p class="mt-2 text-slate-600 leading-relaxed">
+            Creador y mantenedor de My Home Design. Para dudas, sugerencias o propuestas de colaboración, puedes
+            escribirle a través de su página de contacto.
+          </p>
+          <ul class="mt-4 space-y-2">
+            <li><span class="font-semibold">Contacto:</span> <a class="text-sky-800 underline underline-offset-2" href="https://aitorsanchez.pages.dev/contacto" rel="noopener">aitorsanchez.pages.dev/contacto</a></li>
+            <li><span class="font-semibold">Blog:</span> <a class="text-sky-800 underline underline-offset-2" href="https://aitorsanchez.pages.dev" rel="noopener">aitorsanchez.pages.dev</a></li>
+            <li><span class="font-semibold">Aitor Hub:</span> <a class="text-sky-800 underline underline-offset-2" href="https://aitorhub.vercel.app" rel="noopener">aitorhub.vercel.app</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="faq" aria-labelledby="h-faq" class="scroll-mt-6">
+        <h2 id="h-faq" class="text-2xl font-bold text-slate-900">Preguntas frecuentes</h2>
+        <div class="mt-4 space-y-3">
+          <details class="bg-white rounded-xl border border-slate-200 p-4">
+            <summary class="font-semibold cursor-pointer">¿Necesito registrarme para usar My Home Design?</summary>
+            <p class="mt-2 text-slate-600">No. La aplicación funciona directamente en el navegador, sin cuentas ni inicio de sesión.</p>
+          </details>
+          <details class="bg-white rounded-xl border border-slate-200 p-4">
+            <summary class="font-semibold cursor-pointer">¿Dónde se guardan mis proyectos?</summary>
+            <p class="mt-2 text-slate-600">En tu propio navegador, en IndexedDB. Se guardan automáticamente mientras trabajas y no se envían a ningún servidor.</p>
+          </details>
+          <details class="bg-white rounded-xl border border-slate-200 p-4">
+            <summary class="font-semibold cursor-pointer">¿Qué pasa si borro los datos del navegador?</summary>
+            <p class="mt-2 text-slate-600">Los proyectos guardados localmente se perderían. Para conservarlos, expórtalos como archivo JSON desde el menú Exportar y vuelve a importarlos cuando quieras.</p>
+          </details>
+          <details class="bg-white rounded-xl border border-slate-200 p-4">
+            <summary class="font-semibold cursor-pointer">¿Puedo llevar mi diseño a otros programas?</summary>
+            <p class="mt-2 text-slate-600">Sí. Puedes exportar el plano como PNG o SVG, las mediciones como CSV, el modelo 3D como GLB (compatible con Blender y otros visores 3D) y el proyecto completo como JSON.</p>
+          </details>
+          <details class="bg-white rounded-xl border border-slate-200 p-4">
+            <summary class="font-semibold cursor-pointer">¿Qué necesito para ver la vista 3D?</summary>
+            <p class="mt-2 text-slate-600">Un navegador moderno con WebGL activado, algo habitual en cualquier equipo actual.</p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white">
+      <div class="max-w-4xl mx-auto px-5 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-slate-600">
+        <p class="font-medium">© 2026 Aitor Sánchez Gutiérrez. Todos los derechos reservados.</p>
+        <nav aria-label="Enlaces del sitio">
+          <ul class="flex flex-wrap items-center gap-x-5 gap-y-1 font-semibold text-slate-700">
+            <li><a class="hover:text-sky-700 hover:underline" href="/acerca-de/" aria-current="page">Acerca de</a></li>
+            <li><a class="hover:text-sky-700 hover:underline" href="https://aitorsanchez.pages.dev" rel="noopener">Blog</a></li>
+            <li><a class="hover:text-sky-700 hover:underline" href="https://aitorhub.vercel.app" rel="noopener">Aitor Hub</a></li>
+            <li><a class="hover:text-sky-700 hover:underline" href="https://aitorsanchez.pages.dev/contacto" rel="noopener">Contacto</a></li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>
