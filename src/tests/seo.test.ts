@@ -31,7 +31,13 @@ describe.each(Object.entries(pages))('SEO basics: %s', (_name, html) => {
       expect(metaContent(html, 'property', prop), prop).toBeTruthy();
     }
     expect(metaContent(html, 'name', 'twitter:card')).toBe('summary_large_image');
-    expect(metaContent(html, 'property', 'og:image')).toMatch(/^%SITE_URL%\/og-image\.jpg$/);
+    expect(metaContent(html, 'property', 'og:image')).toBe('%SITE_URL%/og-image.png');
+    expect(metaContent(html, 'name', 'twitter:image')).toBe('%SITE_URL%/og-image.png');
+    expect(metaContent(html, 'property', 'og:image:type')).toBe('image/png');
+    expect(metaContent(html, 'property', 'og:image:width')).toBe('1200');
+    expect(metaContent(html, 'property', 'og:image:height')).toBe('630');
+    expect(metaContent(html, 'property', 'og:image:alt')).toBeTruthy();
+    expect(metaContent(html, 'name', 'twitter:image:alt')).toBeTruthy();
   });
 
   it('has valid JSON-LD structured data', () => {
@@ -45,9 +51,39 @@ describe.each(Object.entries(pages))('SEO basics: %s', (_name, html) => {
   });
 
   it('links to the same-site assets it needs', () => {
-    for (const asset of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'manifest.webmanifest', 'og-image.jpg']) {
+    for (const asset of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'manifest.webmanifest', 'og-image.png']) {
       expect(existsSync(resolve(root, 'public', asset)), asset).toBe(true);
     }
+  });
+});
+
+describe.each(Object.entries(pages))('tracking and verification: %s', (_name, html) => {
+  it('loads the Aitor Hub dashboard tracker asynchronously with the app id and key', () => {
+    const tag = /<script\b[^>]*tracker\.js[^>]*>/.exec(html)?.[0] ?? '';
+    expect(tag).toContain('src="https://aitors-hub-dashboard.asanchezgu.workers.dev/tracker.js"');
+    expect(tag).toContain('data-app="home-design-3d"');
+    expect(tag).toContain('data-key="ak_ade0270961ea43ed8dd3521559bfd30e"');
+    expect(tag).toMatch(/\basync\b/);
+  });
+
+  it('exposes the author, blog, Aitor Hub and contact URLs in JSON-LD', () => {
+    const text = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => m[1]).join('');
+    for (const url of [AUTHOR.blog, AUTHOR.hub, AUTHOR.contact]) expect(text).toContain(url);
+    expect(text).toContain('Aitor Sánchez Gutiérrez');
+  });
+});
+
+describe('home page extras', () => {
+  it('includes the Google Search Console verification tag', () => {
+    expect(metaContent(pages.home, 'name', 'google-site-verification')).toBe('9ZHO-guhbhS_RWHdRXOWS6fDLPbIWQB_HFDQbS6noOo');
+  });
+
+  it('references the production app URL by default and the right image dimensions', () => {
+    expect(readFileSync(resolve(root, 'vite.seo.ts'), 'utf8')).toContain("'https://home-design-3d.kbo1.workers.dev'");
+    const png = readFileSync(resolve(root, 'public/og-image.png'));
+    expect(png.subarray(1, 4).toString('ascii')).toBe('PNG'); // real PNG, not a renamed JPEG
+    expect(png.readUInt32BE(16)).toBe(1200);
+    expect(png.readUInt32BE(20)).toBe(630);
   });
 });
 
@@ -88,6 +124,15 @@ describe('About page', () => {
     expect(html).toContain('Aitor Sánchez Gutiérrez');
   });
 
+  it('shows og-image.png with intrinsic size, alt text and responsive sizing', () => {
+    const img = /<img\b[^>]*src="\/og-image\.png"[^>]*>/.exec(html)?.[0] ?? '';
+    expect(img).toContain('width="1200"');
+    expect(img).toContain('height="630"');
+    expect(img).toMatch(/\balt="[^"]{10,}"/);
+    expect(img).toMatch(/\bw-full\b/);
+    expect(img).toMatch(/\bh-auto\b/);
+  });
+
   it('every image has alt text and external links are safe', () => {
     for (const img of html.matchAll(/<img\b[^>]*>/g)) expect(img[0]).toMatch(/\balt="/);
     for (const a of html.matchAll(/<a\b[^>]*href="https?:\/\/[^"]*"[^>]*>/g)) expect(a[0]).toMatch(/rel="[^"]*noopener/);
@@ -120,6 +165,11 @@ describe('public files', () => {
     }
     expect(headers).toMatch(/\/assets\/\*\s+Cache-Control: public, max-age=31536000, immutable/);
     expect(headers).toContain("object-src 'none'");
+    // the dashboard tracker needs to load its script and send its data
+    for (const directive of ['script-src', 'connect-src']) {
+      const value = new RegExp(`${directive} ([^;]*)`).exec(headers)?.[1] ?? '';
+      expect(value, directive).toContain('https://aitors-hub-dashboard.asanchezgu.workers.dev');
+    }
   });
 
   it('404 page is not indexable', () => {
