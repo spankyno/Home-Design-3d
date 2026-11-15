@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="google-site-verification" content="9ZHO-guhbhS_RWHdRXOWS6fDLPbIWQB_HFDQbS6noOo" />
 
     <!-- Primary SEO -->
     <title>My Home Design: diseña planos y viviendas en 2D y 3D online</title>
@@ -18,6 +19,8 @@
     <meta name="color-scheme" content="light" />
     <link rel="alternate" hreflang="es" href="%SITE_URL%/" />
     <link rel="alternate" hreflang="x-default" href="%SITE_URL%/" />
+    <link rel="author" href="https://aitorsanchez.pages.dev" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
     <!-- Icons & PWA -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -35,11 +38,12 @@
       property="og:description"
       content="Dibuja tu vivienda en 2D, amuébala con medidas reales, elige colores y acabados y míralo en 3D. Sin registro."
     />
-    <meta property="og:image" content="%SITE_URL%/og-image.jpg" />
-    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image" content="%SITE_URL%/og-image.png" />
+    <meta property="og:image:secure_url" content="%SITE_URL%/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="My Home Design: plano 2D y vista 3D de una vivienda amueblada" />
+    <meta property="og:image:alt" content="Home Design 3D: plano 2D con cotas junto a un salón amueblado en 3D. Design, visualize, create." />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -48,8 +52,8 @@
       name="twitter:description"
       content="Dibuja tu vivienda en 2D, amuébala con medidas reales y míralo en 3D. Sin registro."
     />
-    <meta name="twitter:image" content="%SITE_URL%/og-image.jpg" />
-    <meta name="twitter:image:alt" content="My Home Design: plano 2D y vista 3D de una vivienda amueblada" />
+    <meta name="twitter:image" content="%SITE_URL%/og-image.png" />
+    <meta name="twitter:image:alt" content="Home Design 3D: plano 2D con cotas junto a un salón amueblado en 3D. Design, visualize, create." />
 
     <!-- Structured data -->
     <script type="application/ld+json">
@@ -61,34 +65,97 @@
             "@id": "%SITE_URL%/#website",
             "url": "%SITE_URL%/",
             "name": "My Home Design",
+            "alternateName": ["Home Design 3D", "Home Design 3D by Aitor Sánchez"],
             "description": "Editor online de planos y viviendas en 2D y 3D.",
             "inLanguage": "es",
-            "publisher": { "@id": "%SITE_URL%/#author" }
+            "publisher": { "@id": "%SITE_URL%/#author" },
+            "author": { "@id": "%SITE_URL%/#author" }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "%SITE_URL%/#webpage",
+            "url": "%SITE_URL%/",
+            "name": "My Home Design: diseña planos y viviendas en 2D y 3D online",
+            "inLanguage": "es",
+            "isPartOf": { "@id": "%SITE_URL%/#website" },
+            "about": { "@id": "%SITE_URL%/#app" },
+            "primaryImageOfPage": { "@id": "%SITE_URL%/#image" },
+            "dateModified": "%BUILD_DATE%",
+            "author": { "@id": "%SITE_URL%/#author" }
+          },
+          {
+            "@type": "ImageObject",
+            "@id": "%SITE_URL%/#image",
+            "url": "%SITE_URL%/og-image.png",
+            "contentUrl": "%SITE_URL%/og-image.png",
+            "width": 1200,
+            "height": 630,
+            "encodingFormat": "image/png",
+            "caption": "Home Design 3D: plano 2D con cotas junto a un salón amueblado en 3D",
+            "creator": { "@id": "%SITE_URL%/#author" }
           },
           {
             "@type": "Person",
             "@id": "%SITE_URL%/#author",
             "name": "Aitor Sánchez Gutiérrez",
             "url": "https://aitorsanchez.pages.dev",
-            "sameAs": ["https://aitorsanchez.pages.dev", "https://aitorhub.vercel.app"]
+            "sameAs": ["https://aitorsanchez.pages.dev", "https://aitorhub.vercel.app"],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "contacto",
+              "url": "https://aitorsanchez.pages.dev/contacto",
+              "availableLanguage": "es"
+            }
+          },
+          {
+            "@type": "Blog",
+            "@id": "https://aitorsanchez.pages.dev/#blog",
+            "url": "https://aitorsanchez.pages.dev",
+            "name": "Blog de Aitor Sánchez",
+            "inLanguage": "es",
+            "author": { "@id": "%SITE_URL%/#author" }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://aitorhub.vercel.app/#website",
+            "url": "https://aitorhub.vercel.app",
+            "name": "Aitor Hub",
+            "inLanguage": "es",
+            "author": { "@id": "%SITE_URL%/#author" }
+          },
+          {
+            "@type": "ContactPage",
+            "@id": "https://aitorsanchez.pages.dev/contacto#contactpage",
+            "url": "https://aitorsanchez.pages.dev/contacto",
+            "name": "Contacto con Aitor Sánchez Gutiérrez",
+            "inLanguage": "es",
+            "about": { "@id": "%SITE_URL%/#author" }
           },
           {
             "@type": "WebApplication",
             "@id": "%SITE_URL%/#app",
             "name": "My Home Design",
+            "alternateName": "Home Design 3D",
             "url": "%SITE_URL%/",
             "description": "Diseña el plano de tu vivienda en 2D con medidas reales, amuébala, elige color y acabado de cada pieza y recórrela en 3D. Funciona en el navegador y no requiere registro.",
             "applicationCategory": "DesignApplication",
+            "applicationSubCategory": "Diseño de interiores y planos",
             "operatingSystem": "Cualquiera (navegador web moderno)",
             "browserRequirements": "Requiere JavaScript y WebGL",
             "inLanguage": "es",
             "isAccessibleForFree": true,
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
-            "image": "%SITE_URL%/og-image.jpg",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR", "availability": "https://schema.org/InStock" },
+            "image": { "@id": "%SITE_URL%/#image" },
+            "screenshot": "%SITE_URL%/og-image.png",
             "author": { "@id": "%SITE_URL%/#author" },
+            "creator": { "@id": "%SITE_URL%/#author" },
+            "publisher": { "@id": "%SITE_URL%/#author" },
             "copyrightHolder": { "@id": "%SITE_URL%/#author" },
             "copyrightYear": 2026,
             "dateModified": "%BUILD_DATE%",
+            "isPartOf": { "@id": "https://aitorhub.vercel.app/#website" },
+            "mainEntityOfPage": { "@id": "%SITE_URL%/#webpage" },
+            "subjectOf": { "@id": "%SITE_URL%/acerca-de/#page" },
             "featureList": [
               "Editor de planos 2D con cotas, medición y ajuste magnético",
               "Catálogo de 37 muebles con medidas reales y muebles paramétricos",
@@ -97,8 +164,7 @@
               "Vista 3D con secciones de muro y sombras",
               "Exportación a PNG, SVG, CSV, GLB y JSON",
               "Guardado automático en el propio navegador"
-            ],
-            "mainEntityOfPage": "%SITE_URL%/acerca-de/"
+            ]
           }
         ]
       }
@@ -114,6 +180,13 @@
       #seo-fallback a{color:#0369a1}
       #seo-fallback nav ul{display:flex;gap:1rem;flex-wrap:wrap;padding:0;list-style:none}
     </style>
+    <!-- Dashboard tracking (Aitor Hub) -->
+    <script
+      src="https://aitors-hub-dashboard.asanchezgu.workers.dev/tracker.js"
+      data-app="home-design-3d"
+      data-key="ak_ade0270961ea43ed8dd3521559bfd30e"
+      async
+    ></script>
   </head>
   <body>
     <div id="root">

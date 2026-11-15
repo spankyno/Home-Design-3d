@@ -17,7 +17,10 @@ const PAGES: Array<{ path: string; changefreq: string; priority: string }> = [
   { path: '/acerca-de/', changefreq: 'monthly', priority: '0.7' },
 ];
 
-const DEFAULT_SITE_URL = 'https://my-home-design.pages.dev';
+const DEFAULT_SITE_URL = 'https://home-design-3d.kbo1.workers.dev';
+
+/** Social / structured-data image (1200×630 PNG in /public), listed in the sitemap for both pages. */
+const SITEMAP_IMAGE = '/og-image.png';
 
 type PackageJson = { version?: string; dependencies?: Record<string, string>; devDependencies?: Record<string, string> };
 
@@ -53,13 +56,13 @@ export function seoPlugin(): Plugin {
     generateBundle() {
       const urls = PAGES.map(
         (p) =>
-          `  <url>\n    <loc>${siteUrl}${p.path}</loc>\n    <lastmod>${buildDate}</lastmod>\n    <changefreq>${p.changefreq}</changefreq>\n    <priority>${p.priority}</priority>\n  </url>`
+          `  <url>\n    <loc>${siteUrl}${p.path}</loc>\n    <lastmod>${buildDate}</lastmod>\n    <changefreq>${p.changefreq}</changefreq>\n    <priority>${p.priority}</priority>\n    <image:image>\n      <image:loc>${siteUrl}${SITEMAP_IMAGE}</image:loc>\n    </image:image>\n  </url>`
       ).join('\n');
 
       this.emitFile({
         type: 'asset',
         fileName: 'sitemap.xml',
-        source: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
+        source: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${urls}\n</urlset>\n`,
       });
       this.emitFile({
         type: 'asset',

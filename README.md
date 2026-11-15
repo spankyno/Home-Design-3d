@@ -136,7 +136,7 @@ src/
 
 - **Footer** en la aplicación (`src/components/Footer.tsx`, datos en `src/site.ts`): Acerca de, blog, Aitor Hub, contacto y copyright.
 - **Página «Acerca de»** (`acerca-de/index.html`): HTML estático y rastreable con funcionamiento, stack tecnológico (versiones reales leídas de `node_modules` en cada build), atajos, autor, contacto y FAQ.
-- **SEO técnico**: `title`/`description` por página, canonical, `hreflang`, Open Graph y Twitter Cards (`public/og-image.jpg`), datos estructurados JSON-LD (WebSite, WebApplication, Person, AboutPage, BreadcrumbList, FAQPage), contenido de respaldo para rastreadores sin JavaScript, `manifest.webmanifest` e iconos (incluido *maskable*), `404.html` con `noindex`, `sitemap.xml` y `robots.txt` generados en cada build.
+- **SEO técnico**: `title`/`description` por página, canonical, `hreflang`, Open Graph y Twitter Cards (`public/og-image.png`, 1200×630), datos estructurados JSON-LD (WebSite, WebApplication, Person, AboutPage, BreadcrumbList, FAQPage), contenido de respaldo para rastreadores sin JavaScript, `manifest.webmanifest` e iconos (incluido *maskable*), `404.html` con `noindex`, `sitemap.xml` y `robots.txt` generados en cada build.
 - **Rendimiento**: la vista 3D (Three.js), la exportación y el diseñador paramétrico se cargan bajo demanda.
 - **Seguridad y caché** (`public/_headers`, formato Cloudflare Pages/Netlify): CSP estricta, `nosniff`, `Referrer-Policy`, `Permissions-Policy` y caché inmutable para `/assets/*`.
 
@@ -146,7 +146,7 @@ src/
 SITE_URL=https://tu-dominio.com npm run build
 ```
 
-(En Cloudflare Pages: *Settings → Environment variables → `SITE_URL`.* Si no se define, se usa `https://my-home-design.pages.dev`, que casi seguro no es la tuya.)
+(En Cloudflare Pages: *Settings → Environment variables → `SITE_URL`.* Si no se define, se usa `https://home-design-3d.kbo1.workers.dev`.)
 
 Medido con Lighthouse sobre el build servido con esas cabeceras: **Rendimiento 100 · Accesibilidad 100 · Buenas prácticas 100 · SEO 100** (aplicación y página «Acerca de»).
 
